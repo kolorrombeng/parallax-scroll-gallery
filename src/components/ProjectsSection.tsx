@@ -59,7 +59,7 @@ const ProjectsSection = () => {
       <section className="min-h-[300vh] relative">
         <div 
           ref={containerRef}
-          className="sticky top-16"
+          className="sticky top-16 overflow-x-auto"
           style={{ height: 'calc(100vh - 128px)' }}
         >
           <div className="relative h-full flex items-center py-12">
@@ -68,7 +68,8 @@ const ProjectsSection = () => {
                 <div
                   key={project.id}
                   style={{
-                    transform: `translateY(${project.offsetY}px)`,
+                    position: 'relative',
+                    top: `${project.offsetY}px`,
                     marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
                   }}
                   className="flex-shrink-0"

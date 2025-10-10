@@ -5,10 +5,9 @@ interface ProjectCardProps {
   size: "small" | "medium" | "large";
   index: number;
   onClick: () => void;
-  borderRadius: string; // 1. Tambahkan prop baru di sini
 }
 
-const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => { // 2. Terima prop di sini
+const ProjectCard = ({ title, category, image, size, index, onClick }: ProjectCardProps) => {
   const sizeClasses = {
     small: "w-[240px] sm:w-[280px] md:w-[320px] h-[280px] sm:h-[320px] md:h-[360px]",
     medium: "w-[300px] sm:w-[360px] md:w-[420px] h-[340px] sm:h-[400px] md:h-[460px]",
@@ -17,8 +16,8 @@ const ProjectCard = ({ title, category, image, size, index, onClick, borderRadiu
 
   return (
     <div 
-      // 3. Hapus 'rounded-2xl' dan ganti dengan prop
-      className={`group relative flex-shrink-0 overflow-hidden ${borderRadius} bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
+      // Ubah 'rounded-lg' menjadi 'rounded-2xl' di baris ini
+      className={`group relative flex-shrink-0 overflow-hidden rounded-2xl bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
       style={{ animationDelay: `${index * 0.1}s` }}
       onClick={onClick}
     >

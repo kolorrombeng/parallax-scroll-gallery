@@ -11,20 +11,21 @@ const ProjectsSection = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleWheel = (event: WheelEvent) => {
-      // Mencegah aksi default (scroll vertikal)
-      event.preventDefault();
-      // Mengubah delta Y (scroll vertikal) menjadi scrollLeft (scroll horizontal)
-      container.scrollLeft += event.deltaY;
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const scrollY = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollProgress = scrollY / maxScroll;
+        
+        const maxHorizontalScroll = containerRef.current.scrollWidth - window.innerWidth;
+        const targetScrollLeft = scrollProgress * maxHorizontalScroll;
+        
+        containerRef.current.scrollLeft = targetScrollLeft;
+      }
     };
 
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    return () => {
-      container.removeEventListener("wheel", handleWheel);
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const projects = [
@@ -52,34 +53,36 @@ const ProjectsSection = () => {
 
   return (
     <>
-      <div 
-        ref={containerRef}
-        className="h-full w-full overflow-x-auto overflow-y-hidden scrollbar-hide"
-      >
-        <div className="h-full w-max flex items-center px-12">
-          <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-            {projects.map((project, index) => (
-              <div
-                key={project.id}
-                style={{
-                  transform: `translateY(${project.offsetY}px)`,
-                  marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
-                }}
-                className="flex-shrink-0"
-              >
-                <ProjectCard
-                  title={project.title}
-                  category={project.category}
-                  image={project.image}
-                  size={project.size as "small" | "medium" | "large"}
-                  index={index}
-                  onClick={() => setSelectedProject(project.id)}
-                />
-              </div>
-            ))}
+      <section className="min-h-[300vh] relative">
+        <div 
+          ref={containerRef}
+          className="sticky top-16 h-[calc(100vh-8rem)] w-full overflow-x-auto scrollbar-hide"
+        >
+          <div className="relative h-full flex items-center">
+            <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12 px-4 sm:px-6 md:px-8 lg:px-12">
+              {projects.map((project, index) => (
+                <div
+                  key={project.id}
+                  style={{
+                    transform: `translateY(${project.offsetY}px)`,
+                    marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
+                  }}
+                  className="flex-shrink-0"
+                >
+                  <ProjectCard
+                    title={project.title}
+                    category={project.category}
+                    image={project.image}
+                    size={project.size as "small" | "medium" | "large"}
+                    index={index}
+                    onClick={() => setSelectedProject(project.id)}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {selectedProjectData && (
         <ProjectDetail

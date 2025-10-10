@@ -17,7 +17,6 @@ const ProjectsSection = () => {
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
         const scrollProgress = scrollY / maxScroll;
         
-        // Calculate horizontal scroll based on vertical scroll
         const maxHorizontalScroll = containerRef.current.scrollWidth - window.innerWidth;
         const targetScrollLeft = scrollProgress * maxHorizontalScroll;
         
@@ -29,8 +28,6 @@ const ProjectsSection = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Projects with varied vertical positions for dynamic staggered layout
-  // Offset calculations: large cards (560px) need more negative offset, small cards can go more positive
   const projects = [
     { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -200, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines." },
     { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 40, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation." },
@@ -59,10 +56,9 @@ const ProjectsSection = () => {
       <section className="min-h-[300vh] relative">
         <div 
           ref={containerRef}
-          className="sticky top-16 overflow-x-auto"
-          style={{ height: 'calc(100vh - 128px)' }}
+          className="sticky top-16 h-[calc(100vh-8rem)] overflow-x-auto overflow-y-hidden"
         >
-          <div className="relative h-full flex items-center py-12">
+          <div className="relative h-full flex py-12">
             <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12 px-4 sm:px-6 md:px-8 lg:px-12">
               {projects.map((project, index) => (
                 <div
@@ -71,6 +67,7 @@ const ProjectsSection = () => {
                     position: 'relative',
                     top: `${project.offsetY}px`,
                     marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
+                    marginTop: '25vh' // Pusatkan secara vertikal
                   }}
                   className="flex-shrink-0"
                 >

@@ -15,25 +15,6 @@ const Index = () => {
         <Header />
         
         <main className="pt-16">
-          {/* Hero Section with parallax */}
-          <section className="relative h-[60vh] sm:h-[70vh] flex items-center justify-center overflow-hidden">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4 sm:mb-6 animate-fade-in">
-                Digital Designer
-              </h1>
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                Crafting meaningful digital experiences through minimalist design and innovative thinking
-              </p>
-            </div>
-            
-            {/* Decorative elements with parallax */}
-            <div className="absolute inset-0 -z-10 overflow-hidden">
-              <div className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-muted/10 rounded-full blur-3xl parallax-slow" />
-              <div className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-96 sm:h-96 bg-accent/10 rounded-full blur-3xl parallax-medium" />
-            </div>
-          </section>
-
-          {/* Projects Section */}
           <ProjectsSection />
 
           {/* Footer */}

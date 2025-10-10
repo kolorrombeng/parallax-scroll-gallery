@@ -2,13 +2,20 @@ interface ProjectCardProps {
   title: string;
   category: string;
   image: string;
+  size: "small" | "medium" | "large";
   index: number;
 }
 
-const ProjectCard = ({ title, category, image, index }: ProjectCardProps) => {
+const ProjectCard = ({ title, category, image, size, index }: ProjectCardProps) => {
+  const sizeClasses = {
+    small: "w-[240px] sm:w-[280px] md:w-[320px] h-[280px] sm:h-[320px] md:h-[360px]",
+    medium: "w-[300px] sm:w-[360px] md:w-[420px] h-[340px] sm:h-[400px] md:h-[460px]",
+    large: "w-[360px] sm:w-[440px] md:w-[520px] h-[400px] sm:h-[480px] md:h-[560px]",
+  };
+
   return (
     <div 
-      className="group relative flex-shrink-0 w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] h-[320px] sm:h-[380px] md:h-[440px] lg:h-[500px] overflow-hidden rounded-lg bg-card transition-transform duration-300 hover:scale-[1.02]"
+      className={`group relative flex-shrink-0 overflow-hidden rounded-lg bg-card transition-transform duration-300 hover:scale-[1.02] ${sizeClasses[size]}`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="relative h-full w-full overflow-hidden">

@@ -29,22 +29,22 @@ const ProjectsSection = () => {
   }, []);
 
   const projects = [
-    { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -150, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines." },
-    { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 80, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation." },
-    { id: 3, title: "Mobile App", category: "Product", image: project3, size: "small", offsetY: -50, marginLeft: 20, description: "Native mobile application with seamless user experience." },
-    { id: 4, title: "Visual System", category: "Design System", image: project4, size: "large", offsetY: 120, marginLeft: 40, description: "Comprehensive design system for consistent user interfaces." },
-    { id: 5, title: "E-commerce", category: "Web Design", image: project1, size: "medium", offsetY: -120, marginLeft: 25, description: "Full-featured e-commerce platform with modern checkout flow." },
-    { id: 6, title: "Art Direction", category: "Creative", image: project2, size: "small", offsetY: 100, marginLeft: 35, description: "Creative direction for digital and print campaigns." },
-    { id: 7, title: "Dashboard UI", category: "Interface", image: project3, size: "large", offsetY: -80, marginLeft: 15, description: "Analytics dashboard with real-time data visualization." },
-    { id: 8, title: "Motion Design", category: "Animation", image: project4, size: "medium", offsetY: 150, marginLeft: 45, description: "Engaging motion graphics and animated experiences." },
-    { id: 9, title: "Logo Design", category: "Branding", image: project1, size: "small", offsetY: -160, marginLeft: 20, description: "Unique logo design reflecting brand personality." },
-    { id: 10, title: "Portfolio Site", category: "Web", image: project2, size: "large", offsetY: 50, marginLeft: 30, description: "Personal portfolio showcasing creative work." },
-    { id: 11, title: "Social Campaign", category: "Marketing", image: project3, size: "medium", offsetY: -90, marginLeft: 40, description: "Multi-platform social media marketing campaign." },
-    { id: 12, title: "Package Design", category: "Print", image: project4, size: "small", offsetY: 180, marginLeft: 25, description: "Product packaging design with eco-friendly materials." },
-    { id: 13, title: "App Interface", category: "Mobile", image: project1, size: "large", offsetY: -110, marginLeft: 35, description: "Mobile app interface with focus on usability." },
-    { id: 14, title: "Editorial Design", category: "Print", image: project2, size: "medium", offsetY: 160, marginLeft: 20, description: "Magazine and editorial layout design." },
-    { id: 15, title: "3D Renders", category: "3D", image: project3, size: "small", offsetY: -30, marginLeft: 45, description: "Photorealistic 3D rendering and visualization." },
-    { id: 16, title: "Illustration Set", category: "Illustration", image: project4, size: "large", offsetY: 90, marginLeft: 15, description: "Custom illustration set for digital products." },
+    { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -150, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
+    { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 80, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation.", borderRadius: "rounded-xl" },
+    { id: 3, title: "Mobile App", category: "Product", image: project3, size: "small", offsetY: -50, marginLeft: 20, description: "Native mobile application with seamless user experience.", borderRadius: "rounded-3xl" },
+    { id: 4, title: "Visual System", category: "Design System", image: project4, size: "large", offsetY: 120, marginLeft: 40, description: "Comprehensive design system for consistent user interfaces.", borderRadius: "rounded-lg" },
+    { id: 5, title: "E-commerce", category: "Web Design", image: project1, size: "medium", offsetY: -120, marginLeft: 25, description: "Full-featured e-commerce platform with modern checkout flow.", borderRadius: "rounded-3xl" },
+    { id: 6, title: "Art Direction", category: "Creative", image: project2, size: "small", offsetY: 100, marginLeft: 35, description: "Creative direction for digital and print campaigns.", borderRadius: "rounded-xl" },
+    { id: 7, title: "Dashboard UI", category: "Interface", image: project3, size: "large", offsetY: -80, marginLeft: 15, description: "Analytics dashboard with real-time data visualization.", borderRadius: "rounded-2xl" },
+    { id: 8, title: "Motion Design", category: "Animation", image: project4, size: "medium", offsetY: 150, marginLeft: 45, description: "Engaging motion graphics and animated experiences.", borderRadius: "rounded-lg" },
+    { id: 9, title: "Logo Design", category: "Branding", image: project1, size: "small", offsetY: -160, marginLeft: 20, description: "Unique logo design reflecting brand personality.", borderRadius: "rounded-3xl" },
+    { id: 10, title: "Portfolio Site", category: "Web", image: project2, size: "large", offsetY: 50, marginLeft: 30, description: "Personal portfolio showcasing creative work.", borderRadius: "rounded-xl" },
+    { id: 11, title: "Social Campaign", category: "Marketing", image: project3, size: "medium", offsetY: -90, marginLeft: 40, description: "Multi-platform social media marketing campaign.", borderRadius: "rounded-2xl" },
+    { id: 12, title: "Package Design", category: "Print", image: project4, size: "small", offsetY: 180, marginLeft: 25, description: "Product packaging design with eco-friendly materials.", borderRadius: "rounded-lg" },
+    { id: 13, title: "App Interface", category: "Mobile", image: project1, size: "large", offsetY: -110, marginLeft: 35, description: "Mobile app interface with focus on usability.", borderRadius: "rounded-3xl" },
+    { id: 14, title: "Editorial Design", category: "Print", image: project2, size: "medium", offsetY: 160, marginLeft: 20, description: "Magazine and editorial layout design.", borderRadius: "rounded-xl" },
+    { id: 15, title: "3D Renders", category: "3D", image: project3, size: "small", offsetY: -30, marginLeft: 45, description: "Photorealistic 3D rendering and visualization.", borderRadius: "rounded-2xl" },
+    { id: 16, title: "Illustration Set", category: "Illustration", image: project4, size: "large", offsetY: 90, marginLeft: 15, description: "Custom illustration set for digital products.", borderRadius: "rounded-lg" },
   ];
 
   const selectedProjectData = selectedProject !== null 

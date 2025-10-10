@@ -18,11 +18,11 @@ const Index = () => {
           <ProjectsSection />
 
           {/* Footer */}
-          <footer className="border-t border-border py-8 sm:py-12">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <footer className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md border-t border-border">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
+              <div className="flex justify-between items-center h-full">
                 <p className="text-sm text-muted-foreground">
-                  © 2024 Digital Designer. All rights reserved.
+                  © 2024 Digital Designer
                 </p>
                 <div className="flex gap-6 text-sm text-muted-foreground">
                   <a href="mailto:hello@designer.com" className="hover:text-foreground transition-colors">

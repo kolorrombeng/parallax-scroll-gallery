@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* ... (sisa kode Anda dari :root sampai .dark) ... */
 
 @layer base {
   :root {
@@ -73,9 +71,15 @@ All colors MUST be HSL.
   }
 }
 
+
 @layer base {
   * {
     @apply border-border;
+  }
+
+  html,
+  body {
+    @apply scrollbar-hide; /* Tambahkan ini */
   }
 
   body {

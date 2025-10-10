@@ -5,8 +5,8 @@ import { Points, PointMaterial } from '@react-three/drei';
 import { useTheme } from 'next-themes';
 
 // --- KONFIGURASI INTERAKSI ---
-const INTERACTION_RADIUS = 1.5; // Jarak radius interaksi kursor
-const REPULSION_STRENGTH = 0.5; // Kekuatan partikel menjauh dari kursor
+const INTERACTION_RADIUS = 1.2; // Jarak radius interaksi kursor
+const REPULSION_STRENGTH = 0.6; // Kekuatan partikel menjauh dari kursor
 const RETURN_SPEED = 0.01;      // Kecepatan partikel kembali ke posisi semula
 
 // Komponen Internal untuk Logika Partikel
@@ -20,7 +20,8 @@ function ParticleSystem() {
     const count = 5000;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < positions.length; i++) {
-      positions[i] = (Math.random() - 0.5) * 10;
+      // Sebar partikel lebih luas agar memenuhi viewport yang lebih besar
+      positions[i] = (Math.random() - 0.5) * 15;
     }
     return {
       initialPositions: new Float32Array(positions), // Salinan untuk posisi asli
@@ -36,9 +37,15 @@ function ParticleSystem() {
       pointsRef.current.rotation.x += delta / 20;
 
       // Logika interaktivitas yang disempurnakan
-      const { pointer } = state;
+      const { pointer, viewport } = state;
       const positions = pointsRef.current.geometry.attributes.position.array;
-      const worldPointer = new THREE.Vector3(pointer.x * 5, -pointer.y * 5, 0);
+      
+      // Terjemahkan posisi kursor (dari -1 ke 1) ke koordinat dunia 3D
+      const worldPointer = new THREE.Vector3(
+        (pointer.x * viewport.width) / 2, 
+        (pointer.y * viewport.height) / 2, 
+        0
+      );
 
       for (let i = 0; i < positions.length; i += 3) {
         const particlePosition = new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]);
@@ -46,11 +53,11 @@ function ParticleSystem() {
         
         // 1. Hitung efek menjauh (repulsion) dari kursor
         const distance = particlePosition.distanceTo(worldPointer);
+        
         if (distance < INTERACTION_RADIUS) {
           const repulsionForce = new THREE.Vector3().subVectors(particlePosition, worldPointer).normalize();
-          // Kekuatan dorongan berbanding terbalik dengan jarak (semakin dekat semakin kuat)
           const strength = (1 - distance / INTERACTION_RADIUS) * REPULSION_STRENGTH;
-          particlePosition.addScaledVector(repulsionForce, strength * delta * 30);
+          particlePosition.addScaledVector(repulsionForce, strength);
         }
 
         // 2. Hitung efek kembali ke posisi semula
@@ -83,7 +90,7 @@ function ParticleSystem() {
 const ThreeParticles = () => {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -1, width: '100vw', height: '100vh' }}>
-      <Canvas camera={{ position: [0, 0, 2] }}>
+      <Canvas camera={{ position: [0, 0, 5] }}> {/* Mundurkan sedikit kamera untuk melihat sebaran partikel yang lebih luas */}
         <ParticleSystem />
       </Canvas>
     </div>

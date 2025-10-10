@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import ThreeParticles from "@/components/ThreeParticles";
+import ThreeParticles from "@/components/Particles2D";
 
 const Index = () => {
   useEffect(() => {

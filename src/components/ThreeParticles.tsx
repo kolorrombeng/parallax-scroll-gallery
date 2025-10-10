@@ -5,9 +5,9 @@ import { Points, PointMaterial } from '@react-three/drei';
 import { useTheme } from 'next-themes';
 
 // --- KONFIGURASI INTERAKSI ---
-const INTERACTION_RADIUS = 1.2; // Jarak radius interaksi kursor
-const REPULSION_STRENGTH = 0.6; // Kekuatan partikel menjauh dari kursor
-const RETURN_SPEED = 0.01;      // Kecepatan partikel kembali ke posisi semula
+const INTERACTION_RADIUS = 2;   // Jarak radius interaksi dari kursor
+const REPULSION_STRENGTH = 0.1; // Kekuatan partikel menjauh dari kursor
+const RETURN_SPEED = 0.02;      // Kecepatan partikel kembali ke posisi semula
 
 // Komponen Internal untuk Logika Partikel
 function ParticleSystem() {
@@ -20,7 +20,6 @@ function ParticleSystem() {
     const count = 5000;
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < positions.length; i++) {
-      // Sebar partikel lebih luas agar memenuhi viewport yang lebih besar
       positions[i] = (Math.random() - 0.5) * 15;
     }
     return {
@@ -29,46 +28,53 @@ function ParticleSystem() {
     };
   }, []);
 
+  const tempParticlePosition = useMemo(() => new THREE.Vector3(), []);
+  const tempInitialPosition = useMemo(() => new THREE.Vector3(), []);
+  const tempWorldPointer = useMemo(() => new THREE.Vector3(), []);
+  const tempRepulsionForce = useMemo(() => new THREE.Vector3(), []);
+  const tempReturnForce = useMemo(() => new THREE.Vector3(), []);
+
   // Gunakan useFrame untuk menganimasikan partikel pada setiap frame
   useFrame((state, delta) => {
     if (pointsRef.current) {
       // Rotasi lembut pada seluruh sistem partikel
-      pointsRef.current.rotation.y += delta / 15;
-      pointsRef.current.rotation.x += delta / 20;
+      pointsRef.current.rotation.y += delta / 20;
 
-      // Logika interaktivitas yang disempurnakan
       const { pointer, viewport } = state;
       const positions = pointsRef.current.geometry.attributes.position.array;
       
       // Terjemahkan posisi kursor (dari -1 ke 1) ke koordinat dunia 3D
-      const worldPointer = new THREE.Vector3(
+      tempWorldPointer.set(
         (pointer.x * viewport.width) / 2, 
         (pointer.y * viewport.height) / 2, 
         0
       );
 
       for (let i = 0; i < positions.length; i += 3) {
-        const particlePosition = new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]);
-        const initialPosition = new THREE.Vector3(initialPositions[i], initialPositions[i + 1], initialPositions[i + 2]);
+        tempParticlePosition.set(positions[i], positions[i + 1], positions[i + 2]);
+        tempInitialPosition.set(initialPositions[i], initialPositions[i + 1], initialPositions[i + 2]);
         
         // 1. Hitung efek menjauh (repulsion) dari kursor
-        const distance = particlePosition.distanceTo(worldPointer);
+        const distance = tempParticlePosition.distanceTo(tempWorldPointer);
         
         if (distance < INTERACTION_RADIUS) {
-          const repulsionForce = new THREE.Vector3().subVectors(particlePosition, worldPointer).normalize();
+          // Hitung vektor dari pointer ke partikel
+          tempRepulsionForce.subVectors(tempParticlePosition, tempWorldPointer).normalize();
+          // Kekuatan dorongan berbanding terbalik dengan jarak
           const strength = (1 - distance / INTERACTION_RADIUS) * REPULSION_STRENGTH;
-          particlePosition.addScaledVector(repulsionForce, strength);
+          tempParticlePosition.addScaledVector(tempRepulsionForce, strength);
         }
 
         // 2. Hitung efek kembali ke posisi semula
-        const returnForce = new THREE.Vector3().subVectors(initialPosition, particlePosition).multiplyScalar(RETURN_SPEED);
-        particlePosition.add(returnForce);
+        tempReturnForce.subVectors(tempInitialPosition, tempParticlePosition).multiplyScalar(RETURN_SPEED);
+        tempParticlePosition.add(tempReturnForce);
         
-        // Update posisi partikel
-        positions[i] = particlePosition.x;
-        positions[i + 1] = particlePosition.y;
-        positions[i + 2] = particlePosition.z;
+        // Update posisi partikel di dalam array
+        positions[i] = tempParticlePosition.x;
+        positions[i + 1] = tempParticlePosition.y;
+        positions[i + 2] = tempParticlePosition.z;
       }
+      // Beri tahu Three.js bahwa posisi perlu diperbarui di GPU
       pointsRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
@@ -90,7 +96,7 @@ function ParticleSystem() {
 const ThreeParticles = () => {
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, zIndex: -1, width: '100vw', height: '100vh' }}>
-      <Canvas camera={{ position: [0, 0, 5] }}> {/* Mundurkan sedikit kamera untuk melihat sebaran partikel yang lebih luas */}
+      <Canvas camera={{ position: [0, 0, 5] }}>
         <ParticleSystem />
       </Canvas>
     </div>

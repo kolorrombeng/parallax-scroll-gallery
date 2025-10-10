@@ -6,7 +6,7 @@ const PARTICLE_COUNT = 1500;     // Jumlah partikel bisa dikurangi agar tidak te
 const MAX_SPEED = 0.5;           // Kecepatan maksimum partikel
 const INTERACTION_RADIUS = 120;  // Radius interaksi kursor
 const REPULSION_STRENGTH = 0.5;  // Kekuatan dorongan dari kursor (dikurangi agar lebih halus)
-const PARTICLE_SIZE = 1;
+const PARTICLE_SIZE = 0.5;
 
 // Tipe data untuk partikel
 interface Particle {

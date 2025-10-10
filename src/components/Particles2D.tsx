@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 
 // --- KONFIGURASI INTERAKSI ---
-const PARTICLE_COUNT = 5000;     // Jumlah partikel (lebih sedikit untuk 2D agar tetap ringan)
+const PARTICLE_COUNT = 3000;     // Jumlah partikel (lebih sedikit untuk 2D agar tetap ringan)
 const INTERACTION_RADIUS = 100;   // Jarak radius interaksi dari kursor (dalam pixel)
 const REPULSION_STRENGTH = 1.5;    // Kekuatan partikel menjauh dari kursor
 const RETURN_SPEED = 0.01;       // Kecepatan partikel kembali ke posisi semula

@@ -79,7 +79,9 @@
 
   html,
   body {
+    height:100%;
     @apply scrollbar-hide; /* Tambahkan ini */
+    overflow: hidden;
   }
 
   body {

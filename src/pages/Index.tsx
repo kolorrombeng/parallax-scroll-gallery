@@ -22,7 +22,7 @@ const Index = () => {
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
               <div className="flex justify-between items-center h-full">
                 <p className="text-sm text-muted-foreground">
-                  © 2024 Digital Designer
+                  © 2025 Demo Website Tasyaf
                 </p>
                 <div className="flex gap-6 text-sm text-muted-foreground">
                   <a href="mailto:hello@designer.com" className="hover:text-foreground transition-colors">

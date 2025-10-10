@@ -16,7 +16,8 @@ const ProjectCard = ({ title, category, image, size, index, onClick }: ProjectCa
 
   return (
     <div 
-      className={`group relative flex-shrink-0 overflow-hidden rounded-lg bg-card transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
+      // TAMBAHKAN 'border' DI SINI
+      className={`group relative flex-shrink-0 overflow-hidden rounded-lg bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
       style={{ animationDelay: `${index * 0.1}s` }}
       onClick={onClick}
     >

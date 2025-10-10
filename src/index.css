@@ -82,22 +82,4 @@ All colors MUST be HSL.
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
   }
-
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-@layer utilities {
-  .parallax-slow {
-    transform: translateY(calc(var(--scroll) * 0.5px));
-  }
-  
-  .parallax-medium {
-    transform: translateY(calc(var(--scroll) * 0.3px));
-  }
-  
-  .parallax-fast {
-    transform: translateY(calc(var(--scroll) * 0.1px));
-  }
 }

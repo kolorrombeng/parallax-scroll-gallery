@@ -8,7 +8,7 @@ const PARTICLE_COUNT = 3000;     // Jumlah partikel (lebih sedikit untuk 2D agar
 const INTERACTION_RADIUS = 100;   // Jarak radius interaksi dari kursor (dalam pixel)
 const REPULSION_STRENGTH = 3;    // Kekuatan partikel menjauh dari kursor
 const RETURN_SPEED = 0.04;       // Kecepatan partikel kembali ke posisi semula
-const PARTICLE_SIZE = 1;         // Ukuran partikel
+const PARTICLE_SIZE = 0.2;         // Ukuran partikel
 
 // Tipe data untuk partikel
 interface Particle {

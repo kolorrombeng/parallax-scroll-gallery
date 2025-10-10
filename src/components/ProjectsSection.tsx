@@ -91,7 +91,7 @@ const ProjectsSection = () => {
     <>
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-hidden cursor-grab active:cursor-grabbing"
+        className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >
         {/* PERUBAHAN UTAMA ADA DI BARIS INI */}
         <div className="h-full w-max flex py-48 px-12">

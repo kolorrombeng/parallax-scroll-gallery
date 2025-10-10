@@ -59,7 +59,7 @@ const ProjectsSection = () => {
       <section className="min-h-[300vh] relative">
         <div 
           ref={containerRef}
-          className="sticky top-16 overflow-x-hidden overflow-y-hidden"
+          className="sticky top-16"
           style={{ height: 'calc(100vh - 128px)' }}
         >
           <div className="relative h-full flex items-center py-12">

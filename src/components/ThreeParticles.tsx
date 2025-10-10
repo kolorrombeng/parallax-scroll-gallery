@@ -4,51 +4,70 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import { useTheme } from 'next-themes';
 
+// --- KONFIGURASI INTERAKSI ---
+const INTERACTION_RADIUS = 1.5; // Jarak radius interaksi kursor
+const REPULSION_STRENGTH = 0.5; // Kekuatan partikel menjauh dari kursor
+const RETURN_SPEED = 0.01;      // Kecepatan partikel kembali ke posisi semula
+
 // Komponen Internal untuk Logika Partikel
 function ParticleSystem() {
   const { theme } = useTheme();
   const particleColor = theme === 'dark' ? '#ffffff' : '#000000';
   const pointsRef = useRef<any>();
 
-  // Buat posisi acak untuk partikel menggunakan useMemo agar tidak dibuat ulang setiap render
-  const positions = useMemo(() => {
+  // Buat dan simpan posisi acak awal untuk partikel
+  const { initialPositions, currentPositions } = useMemo(() => {
     const count = 5000;
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < pos.length; i++) {
-      pos[i] = (Math.random() - 0.5) * 10;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < positions.length; i++) {
+      positions[i] = (Math.random() - 0.5) * 10;
     }
-    return pos;
+    return {
+      initialPositions: new Float32Array(positions), // Salinan untuk posisi asli
+      currentPositions: positions,                   // Array yang akan dianimasikan
+    };
   }, []);
 
   // Gunakan useFrame untuk menganimasikan partikel pada setiap frame
   useFrame((state, delta) => {
     if (pointsRef.current) {
-      // Buat rotasi lembut pada seluruh sistem partikel
+      // Rotasi lembut pada seluruh sistem partikel
       pointsRef.current.rotation.y += delta / 15;
       pointsRef.current.rotation.x += delta / 20;
 
-      // Logika interaktivitas untuk menjauh dari kursor
+      // Logika interaktivitas yang disempurnakan
       const { pointer } = state;
       const positions = pointsRef.current.geometry.attributes.position.array;
+      const worldPointer = new THREE.Vector3(pointer.x * 5, -pointer.y * 5, 0);
+
       for (let i = 0; i < positions.length; i += 3) {
-          const x = positions[i];
-          const y = positions[i + 1];
+        const particlePosition = new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]);
+        const initialPosition = new THREE.Vector3(initialPositions[i], initialPositions[i + 1], initialPositions[i + 2]);
+        
+        // 1. Hitung efek menjauh (repulsion) dari kursor
+        const distance = particlePosition.distanceTo(worldPointer);
+        if (distance < INTERACTION_RADIUS) {
+          const repulsionForce = new THREE.Vector3().subVectors(particlePosition, worldPointer).normalize();
+          // Kekuatan dorongan berbanding terbalik dengan jarak (semakin dekat semakin kuat)
+          const strength = (1 - distance / INTERACTION_RADIUS) * REPULSION_STRENGTH;
+          particlePosition.addScaledVector(repulsionForce, strength * delta * 30);
+        }
 
-          // Hitung jarak partikel dari kursor dalam ruang 2D
-          const distance = Math.sqrt((x - pointer.x * 5) ** 2 + (y - -pointer.y * 5) ** 2);
-
-          // Jika jaraknya dekat, dorong partikel menjauh
-          if (distance < 1.5) {
-              positions[i] += (x - pointer.x * 5) * 0.02;
-              positions[i + 1] += (y - -pointer.y * 5) * 0.02;
-          }
+        // 2. Hitung efek kembali ke posisi semula
+        const returnForce = new THREE.Vector3().subVectors(initialPosition, particlePosition).multiplyScalar(RETURN_SPEED);
+        particlePosition.add(returnForce);
+        
+        // Update posisi partikel
+        positions[i] = particlePosition.x;
+        positions[i + 1] = particlePosition.y;
+        positions[i + 2] = particlePosition.z;
       }
       pointsRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
 
   return (
-    <Points ref={pointsRef} positions={positions} stride={3} frustumCulled={false}>
+    <Points ref={pointsRef} positions={currentPositions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
         color={particleColor}

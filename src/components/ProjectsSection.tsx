@@ -56,18 +56,16 @@ const ProjectsSection = () => {
       <section className="min-h-[300vh] relative">
         <div 
           ref={containerRef}
-          className="sticky top-16 h-[calc(100vh-8rem)] overflow-x-auto overflow-y-hidden"
+          className="sticky top-0 h-screen w-full overflow-x-auto scrollbar-hide"
         >
-          <div className="relative h-full flex py-12">
+          <div className="relative h-full flex items-center">
             <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12 px-4 sm:px-6 md:px-8 lg:px-12">
               {projects.map((project, index) => (
                 <div
                   key={project.id}
                   style={{
-                    position: 'relative',
-                    top: `${project.offsetY}px`,
+                    transform: `translateY(${project.offsetY}px)`,
                     marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
-                    marginTop: '25vh' // Pusatkan secara vertikal
                   }}
                   className="flex-shrink-0"
                 >

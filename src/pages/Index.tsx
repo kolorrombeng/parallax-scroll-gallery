@@ -13,6 +13,7 @@ const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="min-h-screen bg-background">
+        <ThreeParticles />
         <Header />
         
         <main className="pt-16">

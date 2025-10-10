@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="min-h-screen bg-transparent">
-        <Par />
+        <Particles2D />
         <Header />
         
         <main className="pt-16">

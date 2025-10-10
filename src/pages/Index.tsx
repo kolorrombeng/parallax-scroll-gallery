@@ -3,7 +3,7 @@ import { ThemeProvider } from "next-themes";
 import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import ThreeParticles from "@/components/ThreeParticles";
-import ThreeParticles from "@/components/Particles2D";
+import Particles2D from "@/components/Particles2D";
 
 const Index = () => {
   useEffect(() => {
@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="min-h-screen bg-transparent">
-        <ThreeParticles />
+        <Par />
         <Header />
         
         <main className="pt-16">

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { ThemeProvider } from "next-themes";
 import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
+import ThreeParticles from "@/components/ThreeParticles";
 
 const Index = () => {
   useEffect(() => {

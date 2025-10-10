@@ -6,15 +6,20 @@ import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
+// --- KONFIGURASI ---
+// Atur kecepatan auto-scroll (semakin besar semakin cepat)
+const AUTO_SCROLL_SPEED = 0.4; 
+// Atur seberapa cepat efek scroll manual melambat (0.95 = lambat, 0.8 = cepat)
+const FRICTION = 0.95; 
+
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   
-  // Refs untuk mengelola state animasi dan interaksi
+  // Refs untuk mengelola state animasi
   const scrollPosition = useRef(0);
   const animationFrameId = useRef<number | null>(null);
-  const isHovering = useRef(false);
-  const manualScrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const manualScrollSpeed = useRef(0);
 
   const originalProjects = [
     { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -150, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
@@ -37,90 +42,55 @@ const ProjectsSection = () => {
 
   const projects = [...originalProjects, ...originalProjects];
 
-  const startAutoScroll = useCallback(() => {
-    if (isHovering.current || !containerRef.current) return;
+  const animateScroll = useCallback(() => {
+    if (!containerRef.current) return;
+
+    // Tambahkan kecepatan scroll manual (yang melambat) dan kecepatan auto-scroll
+    scrollPosition.current += manualScrollSpeed.current + AUTO_SCROLL_SPEED;
+    // Kurangi kecepatan scroll manual (efek friksi)
+    manualScrollSpeed.current *= FRICTION;
+    // Hentikan sisa pergerakan kecil
+    if (Math.abs(manualScrollSpeed.current) < 0.01) {
+      manualScrollSpeed.current = 0;
+    }
+
+    const scrollWidth = containerRef.current.scrollWidth;
+    const clientWidth = containerRef.current.clientWidth;
+    const maxScroll = scrollWidth - clientWidth;
+
+    // Logika infinite loop
+    if (scrollPosition.current >= maxScroll / 2) {
+      scrollPosition.current -= maxScroll / 2;
+    } else if (scrollPosition.current < 0) {
+      scrollPosition.current += maxScroll / 2;
+    }
     
-    const animate = () => {
-      if (!containerRef.current || isHovering.current) return; // Tambahan pengecekan di dalam loop
-      
-      scrollPosition.current += 0.5;
-
-      const scrollWidth = containerRef.current.scrollWidth;
-      const clientWidth = containerRef.current.clientWidth;
-      const maxScroll = scrollWidth - clientWidth;
-      
-      if (scrollPosition.current >= maxScroll / 2) {
-        scrollPosition.current -= maxScroll / 2;
-      }
-
-      containerRef.current.scrollLeft = scrollPosition.current;
-      animationFrameId.current = requestAnimationFrame(animate);
-    };
-    animationFrameId.current = requestAnimationFrame(animate);
+    containerRef.current.scrollLeft = scrollPosition.current;
+    animationFrameId.current = requestAnimationFrame(animateScroll);
   }, []);
-
-  const stopAutoScroll = () => {
-    if (animationFrameId.current) {
-      cancelAnimationFrame(animationFrameId.current);
-      animationFrameId.current = null;
-    }
-  };
-
-  const handleWheel = useCallback((event: WheelEvent) => {
-    if (containerRef.current) {
-      event.preventDefault();
-      stopAutoScroll();
-      if (manualScrollTimeout.current) {
-        clearTimeout(manualScrollTimeout.current);
-      }
-
-      scrollPosition.current += event.deltaY;
-
-      const scrollWidth = containerRef.current.scrollWidth;
-      const clientWidth = containerRef.current.clientWidth;
-      const maxScroll = scrollWidth - clientWidth;
-
-      if (scrollPosition.current >= maxScroll / 2) {
-        scrollPosition.current -= maxScroll / 2;
-      } else if (scrollPosition.current < 0) {
-        scrollPosition.current += maxScroll / 2;
-      }
-      
-      containerRef.current.scrollLeft = scrollPosition.current;
-
-      manualScrollTimeout.current = setTimeout(startAutoScroll, 2000);
-    }
-  }, [startAutoScroll]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleMouseEnter = () => {
-      isHovering.current = true;
-      stopAutoScroll();
-    };
-    const handleMouseLeave = () => {
-      isHovering.current = false;
-      startAutoScroll();
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      // Tambahkan kecepatan dari mouse wheel ke kecepatan manual
+      manualScrollSpeed.current += event.deltaY * 0.5; // Angka 0.5 untuk sensitivitas
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-    container.addEventListener("mouseenter", handleMouseEnter);
-    container.addEventListener("mouseleave", handleMouseLeave);
     
-    startAutoScroll();
+    // Mulai animasi
+    animationFrameId.current = requestAnimationFrame(animateScroll);
 
     return () => {
       container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener("mouseenter", handleMouseEnter);
-      container.removeEventListener("mouseleave", handleMouseLeave);
-      stopAutoScroll();
-      if (manualScrollTimeout.current) {
-        clearTimeout(manualScrollTimeout.current);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [handleWheel, startAutoScroll]);
+  }, [animateScroll]);
 
   const selectedProjectData = selectedProject !== null 
     ? originalProjects.find(p => p.id === selectedProject) 
@@ -130,9 +100,10 @@ const ProjectsSection = () => {
     <>
       <div 
         ref={containerRef}
-        className="h-full w-full overflow-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+        className="h-full w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >
-        <div className="h-full w-max flex items-center px-12">
+        {/* PENTING: Hapus 'items-center', tambahkan padding vertikal 'py-24' */}
+        <div className="h-full w-max flex py-24 px-12">
           <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
             {projects.map((project, index) => (
               <div

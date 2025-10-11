@@ -85,7 +85,7 @@ const Index = () => {
           <ProjectsSection />
 
           {/* Hapus "border-t" dari className */}
-          <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md">
+          <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
               <div className="flex justify-center items-center h-full">
                 <p className="text-sm text-muted-foreground">

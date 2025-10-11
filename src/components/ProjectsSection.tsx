@@ -10,7 +10,7 @@ import project4 from "@/assets/project-4.jpg";
 const AUTO_SCROLL_SPEED = 0.4; 
 const FRICTION = 0.95; 
 
-const ProjectsSection = () => {
+const ProjectsSection = ({ isDetailOpen }: ProjectsSectionProps) => { // Terima prop di sini
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   
@@ -42,7 +42,13 @@ const ProjectsSection = () => {
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
 
-    scrollPosition.current += manualScrollSpeed.current + AUTO_SCROLL_SPEED;
+    // Hanya tambahkan kecepatan auto-scroll jika detail tidak terbuka
+    let currentSpeed = manualScrollSpeed.current;
+    if (!isDetailOpen) {
+      currentSpeed += AUTO_SCROLL_SPEED;
+    }
+    
+    scrollPosition.current += currentSpeed;
     manualScrollSpeed.current *= FRICTION;
     if (Math.abs(manualScrollSpeed.current) < 0.01) {
       manualScrollSpeed.current = 0;
@@ -59,8 +65,10 @@ const ProjectsSection = () => {
     }
     
     containerRef.current.scrollLeft = scrollPosition.current;
+
+    // Terus panggil frame berikutnya
     animationFrameId.current = requestAnimationFrame(animateScroll);
-  }, []);
+  }, [isDetailOpen]); // Tambahkan isDetailOpen sebagai dependency
 
   useEffect(() => {
     const container = containerRef.current;
@@ -73,6 +81,7 @@ const ProjectsSection = () => {
 
     container.addEventListener("wheel", handleWheel, { passive: false });
     
+    // Mulai animasi
     animationFrameId.current = requestAnimationFrame(animateScroll);
 
     return () => {
@@ -83,6 +92,7 @@ const ProjectsSection = () => {
     };
   }, [animateScroll]);
 
+  // Logika untuk menampilkan detail proyek tetap sama
   const selectedProjectData = selectedProject !== null 
     ? originalProjects.find(p => p.id === selectedProject) 
     : null;
@@ -93,7 +103,6 @@ const ProjectsSection = () => {
         ref={containerRef}
         className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >
-        {/* PERUBAHAN UTAMA ADA DI BARIS INI */}
         <div className="h-full w-max flex py-48 px-12">
           <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
             {projects.map((project, index) => (

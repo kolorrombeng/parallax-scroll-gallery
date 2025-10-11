@@ -1,43 +1,32 @@
+/* src/index.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ... (sisa kode Anda dari :root sampai .dark) ... */
 
 @layer base {
   :root {
     /* Light Mode */
     --background: 0 0% 100%; /* Pure White */
     --foreground: 0 0% 0%;   /* Pure Black */
-
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
-
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 0 0% 95%;
     --secondary-foreground: 0 0% 10%;
-
     --muted: 0 0% 92%;
     --muted-foreground: 0 0% 45%;
-
     --accent: 0 0% 90%;
     --accent-foreground: 0 0% 10%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 88%;
     --input: 0 0% 88%;
     --ring: 0 0% 5%;
-
     --radius: 0.375rem;
-
-    /* Custom design tokens */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -45,34 +34,25 @@
     /* Dark Mode */
     --background: 0 0% 0%;   /* Pure Black */
     --foreground: 0 0% 100%; /* Pure White */
-
     --card: 0 0% 0%;
     --card-foreground: 0 0% 100%;
-
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 100%;
-
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
-
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
-
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 60%;
-
     --accent: 0 0% 20%;
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 0 0% 98%;
   }
 }
-
 
 @layer base {
   * {
@@ -81,27 +61,28 @@
 
   html,
   body {
-    @apply scrollbar-hide; /* Tambahkan ini */
+    @apply scrollbar-hide;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
-     /* --- TAMBAHKAN BARIS DI BAWAH INI --- */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE 10+ */
-    user-select: none;         /* Standard syntax */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 }
 
+/* --- STYLING BARU UNTUK TOMBOL GLITCH --- */
+
 .glitch-button-vertical {
-  width: 48px;  /* Lebar tombol (w-12) */
-  height: 140px; /* Tinggi tombol yang lebih pendek */
+  width: 48px;
+  height: 140px;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   overflow: hidden;
-  position: relative; /* Diperlukan untuk pseudo-elements */
+  position: relative;
   border: none;
 }
 
@@ -117,14 +98,12 @@
 
 .glitch-button-vertical::before,
 .glitch-button-vertical::after {
-  /* Ambil teks dari atribut data-text pada elemen HTML */
   content: attr(data-text);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* Warisi warna latar belakang dari tombol */
   background: inherit;
   display: flex;
   align-items: center;

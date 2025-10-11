@@ -18,11 +18,11 @@ const Index = () => {
         <Particles2D />
         <Header />
         
-        <main className="pt-16">
+        <main>
           <ProjectsSection />
 
           {/* Footer */}
-          <footer className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md border-t border-border">
+          <footer className="h-16 border-t border-border mt-16">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
               <div className="flex justify-center items-center h-full">
                 <p className="text-sm text-muted-foreground">

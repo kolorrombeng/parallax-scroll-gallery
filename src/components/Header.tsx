@@ -20,10 +20,10 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
   }
 
   return (
-    // Tambahkan pointer-events-none di sini
+    // Latar belakang header tidak akan menangkap event mouse
     <header ref={ref} className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Tambahkan pointer-events-auto di sini agar elemen di dalamnya bisa diklik */}
+        {/* Konten di dalam header akan menangkap event mouse seperti biasa */}
         <div className="flex h-16 items-center justify-between pointer-events-auto">
           <div className="flex-shrink-0">
             <button onClick={onBrandClick} className="text-lg sm:text-xl font-semibold tracking-tight cursor-pointer">

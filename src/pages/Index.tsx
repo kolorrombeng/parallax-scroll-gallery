@@ -16,9 +16,14 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const forwardScroll = (e: WheelEvent) => {
+    // --- FUNGSI DENGAN NAMA YANG KONSISTEN ---
+    const forwardWheelScroll = (e: WheelEvent) => {
       e.preventDefault();
-      window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
+      window.scrollBy({
+        top: e.deltaY,
+        left: 0,
+        behavior: 'auto'
+      });
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -36,7 +41,7 @@ const Index = () => {
     const footerEl = footerRef.current;
 
     if (headerEl) {
-      headerEl.addEventListener('wheel', forwardScroll, { passive: false });
+      headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
       headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
       headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
@@ -46,14 +51,15 @@ const Index = () => {
       footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
 
+    // Cleanup function untuk menghapus semua listener
     return () => {
       if (headerEl) {
-        headerEl.removeEventListener('wheel', forwardScroll);
+        headerEl.removeEventListener('wheel', forwardWheelScroll);
         headerEl.removeEventListener('touchstart', handleTouchStart);
         headerEl.removeEventListener('touchmove', handleTouchMove);
       }
       if (footerEl) {
-        footerEl.removeEventListener('wheel', forwardScroll);
+        footerEl.removeEventListener('wheel', forwardWheelScroll);
         footerEl.removeEventListener('touchstart', handleTouchStart);
         footerEl.removeEventListener('touchmove', handleTouchMove);
       }
@@ -80,7 +86,6 @@ const Index = () => {
           </footer>
         </main>
         
-        {/* --- TOMBOL ABOUT BARU DENGAN STYLING GLITCH --- */}
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}

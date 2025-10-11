@@ -15,17 +15,10 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* --- PERUBAHAN DI SINI --- */}
-      <button
-        onClick={onClose}
-        className="vertical-button fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-      >
-        <span className="vertical-text">Close</span>
-      </button>
+      {/* --- TOMBOL CLOSE VERTIKAL DIHAPUS DARI SINI --- */}
 
-      <div className="relative h-full w-full">
-        {/* ... (sisa kode panel konten tidak berubah) ... */}
-        <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12">
+      <div className="relative h-full w-full pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12 pointer-events-auto">
           <h2 className="mb-6 text-2xl font-bold uppercase tracking-widest md:text-3xl">
             About Me
           </h2>
@@ -37,7 +30,7 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
           </p>
         </div>
 
-        <div className="absolute bottom-10 left-10 w-auto rounded-lg border-2 border-foreground bg-background p-6">
+        <div className="absolute bottom-10 left-10 w-auto rounded-lg border-2 border-foreground bg-background p-6 pointer-events-auto">
           <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
             Tech Stack
           </h3>
@@ -53,7 +46,7 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
           </div>
         </div>
         
-        <div className="absolute bottom-10 right-10 hidden w-auto rounded-lg border-2 border-foreground bg-background p-6 md:block">
+        <div className="absolute bottom-10 right-10 hidden w-auto rounded-lg border-2 border-foreground bg-background p-6 md:block pointer-events-auto">
           <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
             Credits
           </h3>

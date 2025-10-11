@@ -64,7 +64,8 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="bg-transparent">
         <Particles2D />
-        <Header ref={headerRef} />
+        {/* --- PERUBAHAN DI SINI: Teruskan fungsi toggle --- */}
+        <Header ref={headerRef} onNameClick={() => setIsAboutOpen(prev => !prev)} />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
@@ -80,15 +81,7 @@ const Index = () => {
             </div>
         </footer>
 
-        {/* --- PERUBAHAN DI SINI --- */}
-        {!isAboutOpen && (
-          <button
-            onClick={() => setIsAboutOpen(true)}
-            className="vertical-button fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-          >
-            <span className="vertical-text">About</span>
-          </button>
-        )}
+        {/* --- TOMBOL ABOUT YANG MENGAMBANG DIHAPUS DARI SINI --- */}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

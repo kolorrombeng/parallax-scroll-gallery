@@ -80,10 +80,11 @@ const Index = () => {
           </div>
         </footer>
 
+        {/* --- PERUBAHAN DI SINI --- */}
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="glitch-button-vertical fixed top-1/2 right-6 -translate-y-1/2 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+            className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
             data-text="About"
           >
             <span className="glitch-text">About</span>

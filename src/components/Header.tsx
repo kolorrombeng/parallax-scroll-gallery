@@ -5,11 +5,11 @@ import { useEffect, useState, forwardRef } from "react";
 
 interface HeaderProps {
   onTitleClick: () => void;
+  onThemeToggle: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-// Gunakan forwardRef untuk meneruskan ref ke elemen <header>
-const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick }, ref) => {
-  const { theme, setTheme } = useTheme();
+const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick, onThemeToggle }, ref) => {
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -21,8 +21,7 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick }, ref) => {
   }
 
   return (
-    // Hapus "border-b" dari className
-    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md transition-colors duration-300 ease-in-out">
+    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
@@ -55,7 +54,7 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick }, ref) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={onThemeToggle}
               className="ml-2"
               aria-label="Toggle theme"
             >

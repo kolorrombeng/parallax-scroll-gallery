@@ -9,10 +9,11 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => { // 2. Terima prop di sini
+  // Ukuran dasar (tanpa prefix sm:/md:) telah diperkecil untuk mobile
   const sizeClasses = {
-    small: "w-[240px] sm:w-[280px] md:w-[320px] h-[280px] sm:h-[320px] md:h-[360px]",
-    medium: "w-[300px] sm:w-[360px] md:w-[420px] h-[340px] sm:h-[400px] md:h-[460px]",
-    large: "w-[360px] sm:w-[440px] md:w-[520px] h-[400px] sm:h-[480px] md:h-[560px]",
+    small: "w-[200px] sm:w-[280px] md:w-[320px] h-[240px] sm:h-[320px] md:h-[360px]",
+    medium: "w-[250px] sm:w-[360px] md:w-[420px] h-[290px] sm:h-[400px] md:h-[460px]",
+    large: "w-[300px] sm:w-[440px] md:w-[520px] h-[340px] sm:h-[480px] md:h-[560px]",
   };
 
   return (

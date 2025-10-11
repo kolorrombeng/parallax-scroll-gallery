@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
+// Tidak ada import CSS di sini
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -16,14 +17,9 @@ const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // --- FUNGSI DENGAN NAMA YANG KONSISTEN ---
     const forwardWheelScroll = (e: WheelEvent) => {
       e.preventDefault();
-      window.scrollBy({
-        top: e.deltaY,
-        left: 0,
-        behavior: 'auto'
-      });
+      window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
     };
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -51,7 +47,6 @@ const Index = () => {
       footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
 
-    // Cleanup function untuk menghapus semua listener
     return () => {
       if (headerEl) {
         headerEl.removeEventListener('wheel', forwardWheelScroll);

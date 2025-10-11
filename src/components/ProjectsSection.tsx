@@ -7,13 +7,13 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
 // --- KONFIGURASI ---
-const AUTO_SCROLL_SPEED = 0.4; 
-const FRICTION = 0.95; 
+const AUTO_SCROLL_SPEED = 0.4;
+const FRICTION = 0.95;
 
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
-  
+
   const scrollPosition = useRef(0);
   const animationFrameId = useRef<number | null>(null);
   const manualScrollSpeed = useRef(0);
@@ -42,7 +42,9 @@ const ProjectsSection = () => {
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
 
-    scrollPosition.current += manualScrollSpeed.current + AUTO_SCROLL_SPEED;
+    // --- PERUBAHAN UTAMA: Jeda auto-scroll saat project detail terbuka ---
+    const currentScrollSpeed = selectedProject === null ? AUTO_SCROLL_SPEED : 0;
+    scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
     manualScrollSpeed.current *= FRICTION;
     if (Math.abs(manualScrollSpeed.current) < 0.01) {
       manualScrollSpeed.current = 0;
@@ -60,7 +62,7 @@ const ProjectsSection = () => {
     
     containerRef.current.scrollLeft = scrollPosition.current;
     animationFrameId.current = requestAnimationFrame(animateScroll);
-  }, []);
+  }, [selectedProject]); // Tambahkan selectedProject sebagai dependency
 
   useEffect(() => {
     const container = containerRef.current;
@@ -81,7 +83,7 @@ const ProjectsSection = () => {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [animateScroll]);
+  }, [animateScroll]); // animateScroll sudah mencakup selectedProject
 
   const selectedProjectData = selectedProject !== null 
     ? originalProjects.find(p => p.id === selectedProject) 

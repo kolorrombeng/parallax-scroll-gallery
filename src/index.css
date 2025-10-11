@@ -99,7 +99,7 @@
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   overflow: hidden;
-  position: relative;
+  /* position: relative; <-- BARIS INI DIHAPUS */
   border: none;
 }
 

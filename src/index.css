@@ -1,78 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* src/index.css */
 
-/* ... (sisa kode Anda dari :root sampai .dark) ... */
-
-@layer base {
-  :root {
-    /* Light Mode */
-    --background: 0 0% 100%; /* Pure White */
-    --foreground: 0 0% 0%;   /* Pure Black */
-
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 95%;
-    --secondary-foreground: 0 0% 10%;
-
-    --muted: 0 0% 92%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
-    --ring: 0 0% 5%;
-
-    --radius: 0.375rem;
-
-    /* Custom design tokens */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .dark {
-    /* Dark Mode */
-    --background: 0 0% 0%;   /* Pure Black */
-    --foreground: 0 0% 100%; /* Pure White */
-
-    --card: 0 0% 0%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 60%;
-
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 0% 98%;
-  }
-}
-
+/* ... (kode yang sudah ada) ... */
 
 @layer base {
   * {
@@ -87,7 +15,6 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
-     /* --- TAMBAHKAN BARIS DI BAWAH INI --- */
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none;    /* Firefox */
     -ms-user-select: none;     /* IE 10+ */
@@ -95,14 +22,12 @@
   }
 }
 
-/* src/pages/Index.css */
+/* --- TAMBAHKAN SEMUA KODE DI BAWAH INI --- */
 
 .about-button {
-  /* Gunakan property CSS untuk menulis vertikal */
   writing-mode: vertical-rl;
-  /* Rotasi teks agar terbaca dari bawah ke atas */
   transform: rotate(180deg);
-  overflow: hidden; /* Penting untuk efek glitch */
+  overflow: hidden;
   position: relative;
   border: none;
 }
@@ -114,10 +39,9 @@
 }
 
 .about-button:hover .about-text {
-  transform: translateY(-2px); /* Sedikit efek naik saat hover */
+  transform: translateY(-2px);
 }
 
-/* --- Efek Glitch --- */
 .about-button::before,
 .about-button::after {
   content: 'About';
@@ -135,7 +59,7 @@
   transform: rotate(180deg);
   opacity: 0;
   transition: opacity 0.3s ease;
-  pointer-events: none; /* Agar tidak menghalangi klik pada tombol */
+  pointer-events: none;
 }
 
 .about-button::before {
@@ -162,36 +86,13 @@
   animation-delay: 0.2s;
 }
 
-@keyframes glitch-effect {
-  0% {
-    transform: rotate(180deg) translate(0px, 0px);
-  }
-  20% {
-    transform: rotate(180deg) translate(-2px, 2px);
-  }
-  40% {
-    transform: rotate(180deg) translate(1px, -1px);
-  }
-  60% {
-    transform: rotate(180deg) translate(-1px, 1px);
-  }
-  80% {
-    transform: rotate(180deg) translate(2px, -2px);
-  }
-  100% {
-    transform: rotate(180deg) translate(0px, 0px);
-  }
-}
-
-/* --- Tambahkan kelas untuk efek glitch pada tombol close juga --- */
 .about-me-close-button {
-  /* Gaya dasar */
   position: fixed;
   top: 0;
   right: 0;
   z-index: 10;
   height: 100%;
-  width: 12px; /* Lebih tipis agar terlihat seperti referensi */
+  width: 12px;
   background-color: black;
   color: white;
   display: flex;
@@ -202,7 +103,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 600;
-  font-size: 0.75rem; /* text-sm */
+  font-size: 0.75rem;
   cursor: pointer;
   overflow: hidden;
   border: none;
@@ -220,7 +121,7 @@
 
 .about-me-close-button::before,
 .about-me-close-button::after {
-  content: 'Close'; /* Ganti dengan teks yang sesuai */
+  content: 'Close';
   position: absolute;
   top: 0;
   left: 0;
@@ -260,4 +161,25 @@
 
 .about-me-close-button:hover::after {
   animation-delay: 0.2s;
+}
+
+@keyframes glitch-effect {
+  0% {
+    transform: rotate(180deg) translate(0px, 0px);
+  }
+  20% {
+    transform: rotate(180deg) translate(-2px, 2px);
+  }
+  40% {
+    transform: rotate(180deg) translate(1px, -1px);
+  }
+  60% {
+    transform: rotate(180deg) translate(-1px, 1px);
+  }
+  80% {
+    transform: rotate(180deg) translate(2px, -2px);
+  }
+  100% {
+    transform: rotate(180deg) translate(0px, 0px);
+  }
 }

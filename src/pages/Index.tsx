@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
-import { useIsMobile } from "@/hooks/use-mobile"; // Impor hook
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -13,12 +13,12 @@ const Index = () => {
   const touchStartY = useRef(0);
 
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const isMobile = useIsMobile(); // Panggil hook
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const forwardScroll = (e: WheelEvent) => {
+    const forwardWheelScroll = (e: WheelEvent) => {
       e.preventDefault();
       window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
     };
@@ -37,34 +37,32 @@ const Index = () => {
     const headerEl = headerRef.current;
     const footerEl = footerRef.current;
 
-    // --- PERUBAHAN DI SINI: Hanya aktifkan jika mobile ---
     if (isMobile) {
       if (headerEl) {
-        headerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
         headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
         headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
       if (footerEl) {
-        footerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
         footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
         footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
     }
 
     return () => {
-      // Cleanup tetap berjalan untuk memastikan tidak ada listener yang tertinggal
       if (headerEl) {
-        headerEl.removeEventListener('wheel', forwardScroll);
+        headerEl.removeEventListener('wheel', forwardWheelScroll);
         headerEl.removeEventListener('touchstart', handleTouchStart);
         headerEl.removeEventListener('touchmove', handleTouchMove);
       }
       if (footerEl) {
-        footerEl.removeEventListener('wheel', forwardScroll);
+        footerEl.removeEventListener('wheel', forwardWheelScroll);
         footerEl.removeEventListener('touchstart', handleTouchStart);
         footerEl.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, [isMobile]); // Tambahkan isMobile sebagai dependency
+  }, [isMobile]);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
@@ -86,14 +84,7 @@ const Index = () => {
             </div>
         </footer>
 
-        {!isAboutOpen && (
-          <button
-            onClick={() => setIsAboutOpen(true)}
-            className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-          >
-            <span className="glitch-text">About</span>
-          </button>
-        )}
+        {/* --- TOMBOL "ABOUT" YANG MENGAMBANG SUDAH DIHAPUS DARI SINI --- */}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

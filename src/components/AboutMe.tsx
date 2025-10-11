@@ -10,26 +10,22 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      {/* Backdrop, bisa diklik untuk menutup */}
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-background/50 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* Teks "Tasyaf Designer" sebagai tombol close */}
-      <div className="fixed top-0 left-0 right-0 z-10 pointer-events-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center">
-            <button onClick={onClose} className="text-left">
-              <h1 className="text-lg sm:text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
-                  Tasyaf Designer
-              </h1>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Tombol Close */}
+      <button
+        onClick={onClose}
+        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+        data-text="Close"
+      >
+        <span className="glitch-text">Close</span>
+      </button>
 
-      {/* Kontainer untuk panel konten */}
+      {/* Kontainer untuk semua panel */}
       <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none flex flex-col md:block items-center justify-center md:items-stretch md:justify-normal">
         
         {/* Panel Utama: ABOUT ME */}

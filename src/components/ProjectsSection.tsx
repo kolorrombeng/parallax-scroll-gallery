@@ -6,10 +6,12 @@ import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 
+// --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
 
+// Hapus prop onAboutClick
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -145,10 +147,9 @@ const ProjectsSection = () => {
 
   return (
     <>
-      {/* --- PERUBAHAN DI SINI: Tambahkan h-full --- */}
       <div 
         ref={containerRef}
-        className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+        className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >
         <div className="h-full w-max flex py-48 px-12">
           <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">

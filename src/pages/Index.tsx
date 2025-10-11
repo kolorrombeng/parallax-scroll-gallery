@@ -4,16 +4,16 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile"; // Impor hook
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
-  const mainContentRef = useRef<HTMLElement>(null); // Ref untuk area <main>
   const currentYear = new Date().getFullYear();
   const touchStartY = useRef(0);
-  const isMobile = useIsMobile();
+
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const isMobile = useIsMobile(); // Panggil hook
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,36 +28,31 @@ const Index = () => {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      // --- PERUBAHAN UTAMA DI SINI ---
-      // Cek apakah target event BUKAN bagian dari ProjectsSection
-      const projectSection = mainContentRef.current?.querySelector('.w-full.overflow-hidden');
-      if (projectSection && !projectSection.contains(e.target as Node)) {
-        e.preventDefault(); // Hanya cegah scroll default jika di luar galeri
-        const touchCurrentY = e.touches[0].clientY;
-        const deltaY = touchStartY.current - touchCurrentY;
-        window.scrollBy(0, deltaY);
-      }
+      e.preventDefault();
+      const touchCurrentY = e.touches[0].clientY;
+      const deltaY = touchStartY.current - touchCurrentY;
+      window.scrollBy(0, deltaY);
     };
     
     const headerEl = headerRef.current;
     const footerEl = footerRef.current;
 
+    // --- PERUBAHAN DI SINI: Hanya aktifkan jika mobile ---
     if (isMobile) {
       if (headerEl) {
-        headerEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+        headerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
         headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
       if (footerEl) {
-        footerEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+        footerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
         footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
-    } else {
-      // Hanya tambahkan wheel listener di desktop
-      if (headerEl) headerEl.addEventListener('wheel', forwardScroll, { passive: false });
-      if (footerEl) footerEl.addEventListener('wheel', forwardScroll, { passive: false });
     }
 
     return () => {
+      // Cleanup tetap berjalan untuk memastikan tidak ada listener yang tertinggal
       if (headerEl) {
         headerEl.removeEventListener('wheel', forwardScroll);
         headerEl.removeEventListener('touchstart', handleTouchStart);
@@ -69,7 +64,7 @@ const Index = () => {
         footerEl.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, [isMobile]);
+  }, [isMobile]); // Tambahkan isMobile sebagai dependency
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
@@ -77,7 +72,7 @@ const Index = () => {
         <Particles2D />
         <Header ref={headerRef} onNameClick={() => setIsAboutOpen(prev => !prev)} />
         
-        <main ref={mainContentRef} className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
         </main>
         
@@ -90,6 +85,15 @@ const Index = () => {
               </div>
             </div>
         </footer>
+
+        {!isAboutOpen && (
+          <button
+            onClick={() => setIsAboutOpen(true)}
+            className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+          >
+            <span className="glitch-text">About</span>
+          </button>
+        )}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

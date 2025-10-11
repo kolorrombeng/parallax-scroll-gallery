@@ -9,16 +9,16 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
+  const mainContentRef = useRef<HTMLElement>(null); // Ref untuk area <main>
   const currentYear = new Date().getFullYear();
   const touchStartY = useRef(0);
-
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const forwardWheelScroll = (e: WheelEvent) => {
+    const forwardScroll = (e: WheelEvent) => {
       e.preventDefault();
       window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
     };
@@ -28,10 +28,15 @@ const Index = () => {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const touchCurrentY = e.touches[0].clientY;
-      const deltaY = touchStartY.current - touchCurrentY;
-      window.scrollBy(0, deltaY);
+      // --- PERUBAHAN UTAMA DI SINI ---
+      // Cek apakah target event BUKAN bagian dari ProjectsSection
+      const projectSection = mainContentRef.current?.querySelector('.w-full.overflow-hidden');
+      if (projectSection && !projectSection.contains(e.target as Node)) {
+        e.preventDefault(); // Hanya cegah scroll default jika di luar galeri
+        const touchCurrentY = e.touches[0].clientY;
+        const deltaY = touchStartY.current - touchCurrentY;
+        window.scrollBy(0, deltaY);
+      }
     };
     
     const headerEl = headerRef.current;
@@ -39,25 +44,27 @@ const Index = () => {
 
     if (isMobile) {
       if (headerEl) {
-        headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
-        headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+        headerEl.addEventListener('touchstart', handleTouchStart, { passive: true });
         headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
       if (footerEl) {
-        footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
-        footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+        footerEl.addEventListener('touchstart', handleTouchStart, { passive: true });
         footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
       }
+    } else {
+      // Hanya tambahkan wheel listener di desktop
+      if (headerEl) headerEl.addEventListener('wheel', forwardScroll, { passive: false });
+      if (footerEl) footerEl.addEventListener('wheel', forwardScroll, { passive: false });
     }
 
     return () => {
       if (headerEl) {
-        headerEl.removeEventListener('wheel', forwardWheelScroll);
+        headerEl.removeEventListener('wheel', forwardScroll);
         headerEl.removeEventListener('touchstart', handleTouchStart);
         headerEl.removeEventListener('touchmove', handleTouchMove);
       }
       if (footerEl) {
-        footerEl.removeEventListener('wheel', forwardWheelScroll);
+        footerEl.removeEventListener('wheel', forwardScroll);
         footerEl.removeEventListener('touchstart', handleTouchStart);
         footerEl.removeEventListener('touchmove', handleTouchMove);
       }
@@ -70,7 +77,7 @@ const Index = () => {
         <Particles2D />
         <Header ref={headerRef} onNameClick={() => setIsAboutOpen(prev => !prev)} />
         
-        <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        <main ref={mainContentRef} className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
         </main>
         
@@ -83,8 +90,6 @@ const Index = () => {
               </div>
             </div>
         </footer>
-
-        {/* Tombol mengambang "About" sudah tidak ada lagi di sini */}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

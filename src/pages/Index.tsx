@@ -1,82 +1,30 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "next-themes";
 import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
-import { useIsMobile } from "@/hooks/use-mobile"; // Impor hook
 
 const Index = () => {
-  const headerRef = useRef<HTMLElement>(null);
-  const footerRef = useRef<HTMLElement>(null);
   const currentYear = new Date().getFullYear();
-  const touchStartY = useRef(0);
-
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const isMobile = useIsMobile(); // Panggil hook
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const forwardScroll = (e: WheelEvent) => {
-      e.preventDefault();
-      window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const touchCurrentY = e.touches[0].clientY;
-      const deltaY = touchStartY.current - touchCurrentY;
-      window.scrollBy(0, deltaY);
-    };
-    
-    const headerEl = headerRef.current;
-    const footerEl = footerRef.current;
-
-    // --- PERUBAHAN DI SINI: Hanya aktifkan jika mobile ---
-    if (isMobile) {
-      if (headerEl) {
-        headerEl.addEventListener('wheel', forwardScroll, { passive: false });
-        headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
-        headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
-      }
-      if (footerEl) {
-        footerEl.addEventListener('wheel', forwardScroll, { passive: false });
-        footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
-        footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
-      }
-    }
-
-    return () => {
-      // Cleanup tetap berjalan untuk memastikan tidak ada listener yang tertinggal
-      if (headerEl) {
-        headerEl.removeEventListener('wheel', forwardScroll);
-        headerEl.removeEventListener('touchstart', handleTouchStart);
-        headerEl.removeEventListener('touchmove', handleTouchMove);
-      }
-      if (footerEl) {
-        footerEl.removeEventListener('wheel', forwardScroll);
-        footerEl.removeEventListener('touchstart', handleTouchStart);
-        footerEl.removeEventListener('touchmove', handleTouchMove);
-      }
-    };
-  }, [isMobile]); // Tambahkan isMobile sebagai dependency
+  }, []);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="bg-transparent">
         <Particles2D />
-        <Header ref={headerRef} onNameClick={() => setIsAboutOpen(prev => !prev)} />
+        {/* Fungsionalitas klik dipindahkan kembali ke tombol terpisah */}
+        <Header />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
         </main>
         
-        <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
+        <footer className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
               <div className="flex justify-center items-center h-full">
                 <p className="text-sm text-muted-foreground">
@@ -90,6 +38,7 @@ const Index = () => {
           <button
             onClick={() => setIsAboutOpen(true)}
             className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+            data-text="About"
           >
             <span className="glitch-text">About</span>
           </button>

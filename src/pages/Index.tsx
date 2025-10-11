@@ -18,7 +18,7 @@ const Index = () => {
         <Header />
         
         <main className="pt-16">
-          <ProjectsSection />
+          <ProjectsSection isDetailOpen={selectedProject !== null} />
 
           {/* Footer */}
           <footer className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md border-t border-border">

@@ -1,4 +1,4 @@
-import { Moon, Sun, Mail, Instagram, Behance, MessageSquare } from "lucide-react";
+import { Moon, Sun, Mail, Instagram, SquarePen, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -53,7 +53,7 @@ const Header = () => {
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Behance"
               >
-                <Behance className="h-4 w-4" />
+                <SquarePen className="h-4 w-4" />
               </a>
 
               <a

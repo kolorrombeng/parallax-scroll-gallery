@@ -94,3 +94,170 @@
     user-select: none;         /* Standard syntax */
   }
 }
+
+/* src/pages/Index.css */
+
+.about-button {
+  /* Gunakan property CSS untuk menulis vertikal */
+  writing-mode: vertical-rl;
+  /* Rotasi teks agar terbaca dari bawah ke atas */
+  transform: rotate(180deg);
+  overflow: hidden; /* Penting untuk efek glitch */
+  position: relative;
+  border: none;
+}
+
+.about-text {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.about-button:hover .about-text {
+  transform: translateY(-2px); /* Sedikit efek naik saat hover */
+}
+
+/* --- Efek Glitch --- */
+.about-button::before,
+.about-button::after {
+  content: 'About';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Agar tidak menghalangi klik pada tombol */
+}
+
+.about-button::before {
+  color: cyan;
+  z-index: 1;
+}
+
+.about-button::after {
+  color: red;
+  z-index: 2;
+}
+
+.about-button:hover::before,
+.about-button:hover::after {
+  opacity: 1;
+  animation: glitch-effect 0.7s infinite linear alternate-reverse;
+}
+
+.about-button:hover::before {
+  animation-delay: 0.1s;
+}
+
+.about-button:hover::after {
+  animation-delay: 0.2s;
+}
+
+@keyframes glitch-effect {
+  0% {
+    transform: rotate(180deg) translate(0px, 0px);
+  }
+  20% {
+    transform: rotate(180deg) translate(-2px, 2px);
+  }
+  40% {
+    transform: rotate(180deg) translate(1px, -1px);
+  }
+  60% {
+    transform: rotate(180deg) translate(-1px, 1px);
+  }
+  80% {
+    transform: rotate(180deg) translate(2px, -2px);
+  }
+  100% {
+    transform: rotate(180deg) translate(0px, 0px);
+  }
+}
+
+/* --- Tambahkan kelas untuk efek glitch pada tombol close juga --- */
+.about-me-close-button {
+  /* Gaya dasar */
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  height: 100%;
+  width: 12px; /* Lebih tipis agar terlihat seperti referensi */
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 0.75rem; /* text-sm */
+  cursor: pointer;
+  overflow: hidden;
+  border: none;
+}
+
+.about-me-close-button .close-text {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.about-me-close-button:hover .close-text {
+  transform: translateY(-2px);
+}
+
+.about-me-close-button::before,
+.about-me-close-button::after {
+  content: 'Close'; /* Ganti dengan teks yang sesuai */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.about-me-close-button::before {
+  color: cyan;
+  z-index: 1;
+}
+
+.about-me-close-button::after {
+  color: red;
+  z-index: 2;
+}
+
+.about-me-close-button:hover::before,
+.about-me-close-button:hover::after {
+  opacity: 1;
+  animation: glitch-effect 0.7s infinite linear alternate-reverse;
+}
+
+.about-me-close-button:hover::before {
+  animation-delay: 0.1s;
+}
+
+.about-me-close-button:hover::after {
+  animation-delay: 0.2s;
+}

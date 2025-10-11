@@ -9,32 +9,69 @@ const Index = () => {
   const footerRef = useRef<HTMLElement>(null);
   const currentYear = new Date().getFullYear();
 
+  // Ref untuk menyimpan posisi sentuhan awal di mobile
+  const touchStartY = useRef(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    // Fungsi untuk meneruskan event scroll (wheel)
-    const forwardScroll = (e: WheelEvent) => {
-      // Mencegah aksi default agar elemen itu sendiri tidak di-scroll
+    // Fungsi untuk meneruskan event scroll (wheel) di DESKTOP
+    const forwardWheelScroll = (e: WheelEvent) => {
       e.preventDefault();
-      // Melakukan scroll pada window utama sesuai dengan delta dari event
       window.scrollBy({
         top: e.deltaY,
         left: 0,
-        behavior: 'auto' // 'auto' agar terasa instan
+        behavior: 'auto',
       });
     };
 
+    // --- LOGIKA BARU UNTUK MOBILE ---
+    // Fungsi untuk memulai deteksi sentuhan
+    const handleTouchStart = (e: TouchEvent) => {
+      // Simpan posisi Y awal dari sentuhan pertama
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    // Fungsi untuk menangani pergerakan sentuhan
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault(); // Mencegah scroll default pada elemen itu sendiri
+      const touchCurrentY = e.touches[0].clientY;
+      // Hitung perbedaan dari posisi awal
+      const deltaY = touchStartY.current - touchCurrentY;
+      
+      // Lakukan scroll pada window utama
+      window.scrollBy(0, deltaY);
+
+      // Kita tidak memperbarui touchStartY.current di sini agar scroll terasa natural
+      // seolah-olah "menyeret" halaman dari posisi sentuhan awal.
+    };
+    
     const headerEl = headerRef.current;
     const footerEl = footerRef.current;
 
-    // Tambahkan event listener ke header dan footer
-    if (headerEl) headerEl.addEventListener('wheel', forwardScroll, { passive: false });
-    if (footerEl) footerEl.addEventListener('wheel', forwardScroll, { passive: false });
+    if (headerEl) {
+      headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
+      headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+      headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+    if (footerEl) {
+      footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
+      footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+      footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
 
-    // Cleanup function untuk menghapus listener saat komponen tidak lagi digunakan
+    // Cleanup function untuk menghapus semua listener
     return () => {
-      if (headerEl) headerEl.removeEventListener('wheel', forwardScroll);
-      if (footerEl) footerEl.removeEventListener('wheel', forwardScroll);
+      if (headerEl) {
+        headerEl.removeEventListener('wheel', forwardWheelScroll);
+        headerEl.removeEventListener('touchstart', handleTouchStart);
+        headerEl.removeEventListener('touchmove', handleTouchMove);
+      }
+      if (footerEl) {
+        footerEl.removeEventListener('wheel', forwardWheelScroll);
+        footerEl.removeEventListener('touchstart', handleTouchStart);
+        footerEl.removeEventListener('touchmove', handleTouchMove);
+      }
     };
   }, []);
 
@@ -42,14 +79,11 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="min-h-screen bg-transparent">
         <Particles2D />
-        {/* Teruskan ref ke komponen Header */}
         <Header ref={headerRef} />
         
-        {/* Kembalikan padding-top untuk memberi ruang bagi header fixed */}
         <main className="pt-16">
           <ProjectsSection />
 
-          {/* Kembalikan footer menjadi fixed dan teruskan ref */}
           <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-16 bg-background/80 backdrop-blur-md border-t border-border">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
               <div className="flex justify-center items-center h-full">

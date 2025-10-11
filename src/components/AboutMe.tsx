@@ -18,13 +18,13 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
       {/* --- PERUBAHAN DI SINI --- */}
       <button
         onClick={onClose}
-        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-        data-text="Close"
+        className="vertical-button fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
       >
-        <span className="glitch-text">Close</span>
+        <span className="vertical-text">Close</span>
       </button>
 
       <div className="relative h-full w-full">
+        {/* ... (sisa kode panel konten tidak berubah) ... */}
         <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12">
           <h2 className="mb-6 text-2xl font-bold uppercase tracking-widest md:text-3xl">
             About Me

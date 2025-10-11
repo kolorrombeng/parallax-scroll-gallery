@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
-// Tidak ada import CSS di sini
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -71,15 +70,14 @@ const Index = () => {
           <ProjectsSection />
         </main>
         
-        {/* Tombol About dan Footer dipindahkan ke luar <main> */}
         <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
-            <div className="flex justify-center items-center h-full">
-              <p className="text-sm text-muted-foreground">
-                © {currentYear} Demo Website Tasyaf
-              </p>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
+              <div className="flex justify-center items-center h-full">
+                <p className="text-sm text-muted-foreground">
+                  © {currentYear} Demo Website Tasyaf
+                </p>
+              </div>
             </div>
-          </div>
         </footer>
 
         {!isAboutOpen && (

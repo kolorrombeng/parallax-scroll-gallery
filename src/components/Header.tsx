@@ -1,4 +1,4 @@
-import { Moon, Sun, Mail, Instagram, Linkedin } from "lucide-react";
+import { Moon, Sun, Mail, Instagram, Behance, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -28,35 +28,42 @@ const Header = () => {
 
           {/* Contact Info & Theme Toggle */}
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Contact Links - Hidden on very small screens */}
-            <a
-              href="mailto:hello@designer.com"
-              className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Email"
-            >
-              <Mail className="h-4 w-4" />
-              <span className="hidden md:inline">hello@designer.com</span>
-            </a>
-
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <a
-                href="https://github.com"
+                href="mailto:hello@designer.com"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+              <a
+                href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Instagram"
               >
-                <Github className="h-4 w-4" />
+                <Instagram className="h-4 w-4" />
               </a>
 
               <a
-                href="https://linkedin.com"
+                href="https://behance.net"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="LinkedIn"
+                aria-label="Behance"
               >
-                <Linkedin className="h-4 w-4" />
+                <Behance className="h-4 w-4" />
+              </a>
+
+              <a
+                href="https://wa.me/yourphonenumber" // Ganti dengan nomor WhatsApp Anda
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="WhatsApp"
+              >
+                <MessageSquare className="h-4 w-4" />
               </a>
             </div>
 

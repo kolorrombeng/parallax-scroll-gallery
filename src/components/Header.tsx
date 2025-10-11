@@ -3,8 +3,12 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState, forwardRef } from "react";
 
+interface HeaderProps {
+  onTitleClick: () => void;
+}
+
 // Gunakan forwardRef untuk meneruskan ref ke elemen <header>
-const Header = forwardRef<HTMLElement>((props, ref) => {
+const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick }, ref) => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -22,9 +26,11 @@ const Header = forwardRef<HTMLElement>((props, ref) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
-            <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
-              Tasyaf Designer
-            </h1>
+            <button onClick={onTitleClick} className="text-left">
+              <h1 className="text-lg sm:text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
+                Tasyaf Designer
+              </h1>
+            </button>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <a

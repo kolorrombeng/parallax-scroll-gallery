@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
+import './Index.css'; // <-- Impor file CSS baru
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -41,7 +42,7 @@ const Index = () => {
       headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
     if (footerEl) {
-      footerEl.addEventListener('wheel', forwardScroll, { passive: false });
+      footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
       footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
       footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
@@ -80,13 +81,13 @@ const Index = () => {
           </footer>
         </main>
         
-        {/* --- PERUBAHAN DI SINI --- */}
+        {/* --- TOMBOL ABOUT BARU DENGAN STYLING GLITCH --- */}
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="fixed top-6 right-6 z-50 bg-foreground text-background px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-md hover:bg-foreground/80 transition-colors"
+            className="about-button fixed top-0 right-0 z-50 h-full w-12 flex items-center justify-center bg-black text-white text-base font-bold uppercase tracking-widest cursor-pointer"
           >
-            About
+            <span className="about-text">About</span>
           </button>
         )}
         

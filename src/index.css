@@ -121,7 +121,6 @@
 }
 
 .glitch-button-vertical::after {
-  color: red;
   z-index: 2;
 }
 

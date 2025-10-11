@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Light Mode */
+    /* ... (kode variabel CSS Anda yang sudah ada) ... */
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
     --card: 0 0% 100%;
@@ -31,7 +31,7 @@
   }
 
   .dark {
-    /* Dark Mode */
+    /* ... (kode variabel CSS mode gelap Anda) ... */
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
     --card: 0 0% 0%;
@@ -74,74 +74,27 @@
   }
 }
 
-/* --- STYLING BARU UNTUK TOMBOL GLITCH --- */
+/* --- STYLING BARU UNTUK TOMBOL VERTIKAL --- */
 
-.glitch-button-vertical {
-  width: 48px;
+.vertical-button {
+  width: 12px; /* Lebar awal yang ramping */
   height: 140px;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  overflow: hidden;
   border: none;
-  border-radius: 0.5rem; /* <-- TAMBAHKAN BARIS INI */
+  border-radius: 0.5rem;
+  transition: width 0.3s ease-in-out; /* Transisi untuk efek melebar */
 }
 
-.glitch-text {
-  position: relative;
+.vertical-button:hover {
+  width: 48px;
+}
+
+.vertical-text {
   display: inline-block;
   transition: transform 0.3s ease;
 }
 
-.glitch-button-vertical:hover .glitch-text {
-  transform: translateY(-2px);
-}
-
-.glitch-button-vertical::before,
-.glitch-button-vertical::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.glitch-button-vertical::before {
-  color: cyan;
-  z-index: 1;
-}
-
-.glitch-button-vertical::after {
-  z-index: 2;
-}
-
-.glitch-button-vertical:hover::before,
-.glitch-button-vertical:hover::after {
-  opacity: 1;
-}
-
-.glitch-button-vertical:hover::before {
-  animation-delay: 0.1s;
-}
-
-.glitch-button-vertical:hover::after {
-  animation-delay: 0.2s;
-}
-
-@keyframes glitch-effect {
-  0% { transform: rotate(180deg) translate(0px, 0px); }
-  20% { transform: rotate(180deg) translate(-2px, 2px); }
-  40% { transform: rotate(180deg) translate(1px, -1px); }
-  60% { transform: rotate(180deg) translate(-1px, 1px); }
-  80% { transform: rotate(180deg) translate(2px, -2px); }
-  100% { transform: rotate(180deg) translate(0px, 0px); }
+.vertical-button:hover .vertical-text {
+  transform: translateY(-2px); /* Efek teks sedikit terangkat */
 }

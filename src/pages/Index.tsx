@@ -80,11 +80,11 @@ const Index = () => {
           </footer>
         </main>
         
-        {/* --- TOMBOL ABOUT BARU DI SINI --- */}
+        {/* --- PERUBAHAN DI SINI --- */}
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="fixed top-6 right-6 z-30 bg-foreground text-background px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-md hover:bg-foreground/80 transition-colors"
+            className="fixed top-6 right-6 z-50 bg-foreground text-background px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-md hover:bg-foreground/80 transition-colors"
           >
             About
           </button>

@@ -9,10 +9,8 @@ import ThemeRipple from "@/components/ThemeRipple";
 interface Ripple {
   x: number;
   y: number;
-  maxRadius: number;
-  startTime: number;
-  color: [number, number, number];
-  bgColor: [number, number, number];
+  color: string;
+  bgColor: string;
 }
 
 const IndexContent = () => {
@@ -28,26 +26,18 @@ const IndexContent = () => {
   const handleThemeChange = (event: React.MouseEvent<HTMLButtonElement>) => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     
-    // Konversi posisi klik ke koordinat UV (0-1)
-    const x = event.clientX / window.innerWidth;
-    const y = event.clientY / window.innerHeight;
-
     setRipple({
-      x,
-      y,
-      maxRadius: 0, // Tidak digunakan lagi di implementasi shader
-      startTime: Date.now(),
-      color: newTheme === 'dark' ? [0, 0, 0] : [1, 1, 1],
-      bgColor: theme === 'dark' ? [0, 0, 0] : [1, 1, 1],
+      x: event.clientX,
+      y: event.clientY,
+      color: newTheme === 'dark' ? '#000000' : '#ffffff',
+      bgColor: theme === 'dark' ? '#000000' : '#ffffff',
     });
   };
   
   const onRippleAnimationComplete = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    setTimeout(() => {
-        setRipple(null);
-    }, 100);
+    // Kita tidak perlu mereset ripple di sini, biarkan komponennya menangani sendiri
   };
 
   useEffect(() => {

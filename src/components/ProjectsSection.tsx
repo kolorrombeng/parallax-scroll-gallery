@@ -8,10 +8,9 @@ import project4 from "@/assets/project-4.jpg";
 
 // --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
-const FRICTION = 0.95;
-const DRAG_MULTIPLIER = 2;
+const FRICTION = 0.95; // Seberapa cepat momentum berhenti (0.95 = lambat, 0.9 = cepat)
+const DRAG_MULTIPLIER = 2; // Seberapa responsif geseran (drag/swipe)
 
-// Hapus prop onAboutClick
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
@@ -20,6 +19,7 @@ const ProjectsSection = () => {
   const animationFrameId = useRef<number | null>(null);
   const manualScrollSpeed = useRef(0);
 
+  // --- REFS UNTUK INTERAKSI GESER (DRAG/TOUCH) ---
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
@@ -86,7 +86,7 @@ const ProjectsSection = () => {
       isDragging.current = true;
       startX.current = pageX - container.offsetLeft;
       scrollLeftStart.current = container.scrollLeft;
-      manualScrollSpeed.current = 0;
+      manualScrollSpeed.current = 0; // Hentikan momentum yang ada
       container.style.cursor = 'grabbing';
     };
 
@@ -96,6 +96,7 @@ const ProjectsSection = () => {
       const walk = (x - startX.current) * DRAG_MULTIPLIER;
       const newScrollLeft = scrollLeftStart.current - walk;
 
+      // Hitung kecepatan berdasarkan pergerakan terakhir untuk efek lemparan
       const velocity = newScrollLeft - scrollPosition.current;
       manualScrollSpeed.current = velocity;
 
@@ -109,6 +110,7 @@ const ProjectsSection = () => {
       container.style.cursor = 'grab';
     };
 
+    // --- EVENT LISTENERS ---
     const handleMouseDown = (e: MouseEvent) => handleDragStart(e.pageX);
     const handleMouseMove = (e: MouseEvent) => handleDragMove(e.pageX);
     const handleTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].pageX);
@@ -118,9 +120,13 @@ const ProjectsSection = () => {
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
+
+    // Desktop Drag
     container.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleDragEnd);
+
+    // Mobile Touch
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchend', handleDragEnd);
@@ -147,7 +153,7 @@ const ProjectsSection = () => {
 
   return (
     <>
-      <div 
+      <div
         ref={containerRef}
         className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >

@@ -1,58 +1,78 @@
-/* src/index.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ... (sisa kode Anda dari :root sampai .dark) ... */
+
 @layer base {
   :root {
-    /* ... (kode variabel CSS Anda yang sudah ada) ... */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* Light Mode */
+    --background: 0 0% 100%; /* Pure White */
+    --foreground: 0 0% 0%;   /* Pure Black */
+
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
+
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
+
     --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
+
     --secondary: 0 0% 95%;
     --secondary-foreground: 0 0% 10%;
+
     --muted: 0 0% 92%;
     --muted-foreground: 0 0% 45%;
+
     --accent: 0 0% 90%;
     --accent-foreground: 0 0% 10%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
+
     --border: 0 0% 88%;
     --input: 0 0% 88%;
     --ring: 0 0% 5%;
+
     --radius: 0.375rem;
+
+    /* Custom design tokens */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    /* ... (kode variabel CSS mode gelap Anda) ... */
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
+    /* Dark Mode */
+    --background: 0 0% 0%;   /* Pure Black */
+    --foreground: 0 0% 100%; /* Pure White */
+
     --card: 0 0% 0%;
     --card-foreground: 0 0% 100%;
+
     --popover: 0 0% 0%;
     --popover-foreground: 0 0% 100%;
+
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 0%;
+
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
+
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 60%;
+
     --accent: 0 0% 20%;
     --accent-foreground: 0 0% 98%;
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
+
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 0 0% 98%;
   }
 }
+
 
 @layer base {
   * {
@@ -61,40 +81,16 @@
 
   html,
   body {
-    @apply scrollbar-hide;
+    @apply scrollbar-hide; /* Tambahkan ini */
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+     /* --- TAMBAHKAN BARIS DI BAWAH INI --- */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE 10+ */
+    user-select: none;         /* Standard syntax */
   }
-}
-
-/* --- STYLING BARU UNTUK TOMBOL VERTIKAL --- */
-
-.vertical-button {
-  width: 12px; /* Lebar awal yang ramping */
-  height: 140px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  border: none;
-  border-radius: 0.5rem;
-  transition: width 0.3s ease-in-out; /* Transisi untuk efek melebar */
-}
-
-.vertical-button:hover {
-  width: 48px;
-}
-
-.vertical-text {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.vertical-button:hover .vertical-text {
-  transform: translateY(-2px); /* Efek teks sedikit terangkat */
 }

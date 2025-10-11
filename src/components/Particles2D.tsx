@@ -2,29 +2,24 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 
 // --- KONFIGURASI PARTIKEL ---
-const PARTICLE_COUNT = 1500;
-const INTERACTION_RADIUS = 120;
-const REPULSION_STRENGTH = 1.5; // Ditingkatkan agar interaksi mouse lebih terasa
+const PARTICLE_COUNT = 1500;     // Jumlah partikel bisa dikurangi agar tidak terlalu ramai
+const MAX_SPEED = 0.5;           // Kecepatan maksimum partikel
+const INTERACTION_RADIUS = 120;  // Radius interaksi kursor
+const REPULSION_STRENGTH = 0.5;  // Kekuatan dorongan dari kursor (dikurangi agar lebih halus)
 const PARTICLE_SIZE = 0.5;
-
-// --- KONFIGURASI GELOMBANG ---
-const NOISE_SPEED = 0.003;   // Seberapa cepat pola gelombang berubah
-const NOISE_SCALE = 0.004;   // Skala/kerapatan pola gelombang
-const PARTICLE_SPEED = 0.3;  // Kecepatan dasar partikel mengikuti arus
 
 // Tipe data untuk partikel
 interface Particle {
   x: number;
   y: number;
-  vx: number;
-  vy: number;
+  vx: number; // Kecepatan horizontal
+  vy: number; // Kecepatan vertikal
 }
 
 const Particles2D: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999 });
-  const frameRef = useRef(0); // Ref untuk melacak waktu/frame animasi
   const { theme } = useTheme();
 
   const particleColor = useMemo(() => (theme === 'dark' ? '#ffffff' : '#000000'), [theme]);
@@ -45,8 +40,9 @@ const Particles2D: React.FC = () => {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: 0,
-          vy: 0,
+          // Kecepatan awal yang acak
+          vx: (Math.random() - 0.5) * MAX_SPEED,
+          vy: (Math.random() - 0.5) * MAX_SPEED,
         });
       }
     };
@@ -58,7 +54,7 @@ const Particles2D: React.FC = () => {
       mouseRef.current = { x: event.clientX, y: event.clientY };
     };
     const handleMouseLeave = () => {
-      mouseRef.current = { x: -9999, y: -9999 };
+        mouseRef.current = { x: -9999, y: -9999 };
     }
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseleave', handleMouseLeave);
@@ -68,39 +64,29 @@ const Particles2D: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = particleColor;
 
-      frameRef.current++; // Majukan waktu animasi
-
       particlesRef.current.forEach(p => {
-        // 1. Hitung sudut dari flow field (wavy motion)
-        const angle = (Math.cos(p.x * NOISE_SCALE + frameRef.current * NOISE_SPEED) + Math.sin(p.y * NOISE_SCALE + frameRef.current * NOISE_SPEED)) * Math.PI;
-
-        // Terapkan kecepatan berdasarkan sudut
-        p.vx = Math.cos(angle) * PARTICLE_SPEED;
-        p.vy = Math.sin(angle) * PARTICLE_SPEED;
-
-        // 2. Interaksi dengan kursor (repulsion)
+        // Interaksi dengan kursor
         const dx = mouseRef.current.x - p.x;
         const dy = mouseRef.current.y - p.y;
         const distance = Math.hypot(dx, dy);
 
         if (distance < INTERACTION_RADIUS) {
           const force = (INTERACTION_RADIUS - distance) / INTERACTION_RADIUS;
-          // Tambahkan gaya dorong ke kecepatan yang sudah ada
           p.vx -= (dx / distance) * force * REPULSION_STRENGTH;
           p.vy -= (dy / distance) * force * REPULSION_STRENGTH;
         }
         
-        // 3. Update posisi partikel
+        // Update posisi partikel
         p.x += p.vx;
         p.y += p.vy;
 
-        // 4. Logika "wrap-around" agar partikel kembali muncul
+        // Logika "wrap-around": jika partikel keluar layar, muncul kembali dari sisi seberangnya
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
         if (p.y > canvas.height) p.y = 0;
 
-        // 5. Gambar partikel
+        // Gambar partikel
         ctx.beginPath();
         ctx.arc(p.x, p.y, PARTICLE_SIZE, 0, Math.PI * 2);
         ctx.fill();

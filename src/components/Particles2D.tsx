@@ -34,6 +34,8 @@ const Particles2D: React.FC = () => {
   const mouseRef = useRef({ x: -9999, y: -9999 });
   const frameRef = useRef(0);
   const themeRef = useRef<'light' | 'dark'>('dark');
+  const fpsRef = useRef(60);
+  const lastFrameTimeRef = useRef(performance.now());
 
   // Detect theme from system
   useEffect(() => {
@@ -71,13 +73,22 @@ const Particles2D: React.FC = () => {
     if (!ctx) return;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio, 2); // Batasi DPR untuk performa
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
+      
+      // Adjust particle count based on screen size
+      const screenArea = window.innerWidth * window.innerHeight;
+      const baseArea = 1920 * 1080;
+      const adjustedCount = Math.floor(PARTICLE_COUNT * Math.min(screenArea / baseArea, 1));
       
       particlesRef.current = [];
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+      for (let i = 0; i < adjustedCount; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
         particlesRef.current.push({
           x,
           y,
@@ -96,7 +107,19 @@ const Particles2D: React.FC = () => {
 
     let animationFrameId: number;
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // FPS throttling untuk performa konsisten
+      const now = performance.now();
+      const elapsed = now - lastFrameTimeRef.current;
+      const targetFrameTime = 1000 / 60; // Target 60fps
+      
+      if (elapsed < targetFrameTime) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+      
+      lastFrameTimeRef.current = now - (elapsed % targetFrameTime);
+      
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       
       const colors = getColors();
       
@@ -133,43 +156,77 @@ const Particles2D: React.FC = () => {
         p.y += p.vy;
 
         // Batasi jarak dari base position (soft boundary)
-        const distFromBase = Math.hypot(dx, dy);
+        const distFromBase = Math.hypot(p.x - p.baseX, p.y - p.baseY);
         if (distFromBase > 200) {
           p.x = p.baseX + (p.x - p.baseX) * 0.95;
           p.y = p.baseY + (p.y - p.baseY) * 0.95;
         }
       });
 
-      // Draw connections (optional, for depth)
+      // Draw connections (dengan optimasi)
       ctx.strokeStyle = colors.line;
       ctx.lineWidth = 0.5;
-      for (let i = 0; i < particlesRef.current.length; i++) {
-        const p1 = particlesRef.current[i];
-        for (let j = i + 1; j < particlesRef.current.length; j++) {
-          const p2 = particlesRef.current[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const distance = Math.hypot(dx, dy);
-
-          if (distance < CONNECTION_DISTANCE) {
-            const opacity = (1 - distance / CONNECTION_DISTANCE) * LINE_OPACITY;
-            ctx.globalAlpha = opacity;
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.stroke();
+      
+      // Gunakan spatial hashing sederhana untuk optimasi
+      const cellSize = CONNECTION_DISTANCE;
+      const cols = Math.ceil(window.innerWidth / cellSize);
+      const grid: Particle[][] = Array(cols * Math.ceil(window.innerHeight / cellSize)).fill(null).map(() => []);
+      
+      // Masukkan partikel ke grid
+      particlesRef.current.forEach(p => {
+        const col = Math.floor(p.x / cellSize);
+        const row = Math.floor(p.y / cellSize);
+        const index = row * cols + col;
+        if (grid[index]) grid[index].push(p);
+      });
+      
+      // Draw connections hanya untuk partikel di sel yang sama atau bersebelahan
+      particlesRef.current.forEach(p1 => {
+        const col = Math.floor(p1.x / cellSize);
+        const row = Math.floor(p1.y / cellSize);
+        let connectionCount = 0;
+        
+        // Check sel current dan 8 sel tetangga
+        for (let dy = -1; dy <= 1 && connectionCount < MAX_CONNECTIONS_PER_PARTICLE; dy++) {
+          for (let dx = -1; dx <= 1 && connectionCount < MAX_CONNECTIONS_PER_PARTICLE; dx++) {
+            const checkCol = col + dx;
+            const checkRow = row + dy;
+            const index = checkRow * cols + checkCol;
+            
+            if (!grid[index]) continue;
+            
+            for (const p2 of grid[index]) {
+              if (p1 === p2 || connectionCount >= MAX_CONNECTIONS_PER_PARTICLE) continue;
+              
+              const dx = p1.x - p2.x;
+              const dy = p1.y - p2.y;
+              const distSq = dx * dx + dy * dy; // Gunakan distance squared untuk performa
+              
+              if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
+                const opacity = (1 - Math.sqrt(distSq) / CONNECTION_DISTANCE) * LINE_OPACITY;
+                ctx.globalAlpha = opacity;
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+                connectionCount++;
+              }
+            }
           }
         }
-      }
+      });
 
-      // Draw particles
+      // Draw particles dengan batching
       ctx.globalAlpha = 1;
       ctx.fillStyle = colors.particle;
+      
+      // Batch draw untuk performa lebih baik
+      ctx.beginPath();
       particlesRef.current.forEach(p => {
-        ctx.beginPath();
+        ctx.moveTo(p.x + PARTICLE_SIZE, p.y);
         ctx.arc(p.x, p.y, PARTICLE_SIZE, 0, Math.PI * 2);
-        ctx.fill();
       });
+      ctx.fill();
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -196,6 +253,7 @@ const Particles2D: React.FC = () => {
           left: 0,
           width: '100%',
           height: '100%',
+          willChange: 'transform', // GPU acceleration hint
         }}
       />
       <div style={{

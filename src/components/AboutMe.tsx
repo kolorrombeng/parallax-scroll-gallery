@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+// src/components/AboutMe.tsx
 
 interface AboutMeProps {
   isOpen: boolean;
@@ -12,23 +12,19 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-background/50 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* Tombol Close Vertikal dengan Glitch */}
       <button
         onClick={onClose}
-        className="about-me-close-button" // <-- Gunakan class CSS baru
+        className="about-me-close-button"
       >
         <span className="close-text">Close</span>
       </button>
 
-      {/* Konten Panel */}
       <div className="relative h-full w-full">
-        {/* Panel Utama: About Me */}
         <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12">
           <h2 className="mb-6 text-2xl font-bold uppercase tracking-widest md:text-3xl">
             About Me
@@ -41,7 +37,6 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
           </p>
         </div>
 
-        {/* Panel Bawah: Tech Stack */}
         <div className="absolute bottom-10 left-10 w-auto rounded-lg border-2 border-foreground bg-background p-6">
           <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
             Tech Stack
@@ -58,7 +53,6 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
           </div>
         </div>
         
-        {/* Panel Kanan: Credits */}
         <div className="absolute bottom-10 right-10 hidden w-auto rounded-lg border-2 border-foreground bg-background p-6 md:block">
           <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
             Credits

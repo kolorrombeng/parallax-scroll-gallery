@@ -13,26 +13,6 @@ const Index = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    const forwardScroll = (e: WheelEvent) => {
-      e.preventDefault();
-      window.scrollBy({
-        top: e.deltaY,
-        left: 0,
-        behavior: 'auto'
-      });
-    };
-
-    const headerEl = headerRef.current;
-    const footerEl = footerRef.current;
-
-    if (headerEl) headerEl.addEventListener('wheel', forwardScroll, { passive: false });
-    if (footerEl) footerEl.addEventListener('wheel', forwardScroll, { passive: false });
-
-    return () => {
-      if (headerEl) headerEl.removeEventListener('wheel', forwardScroll);
-      if (footerEl) footerEl.removeEventListener('wheel', forwardScroll);
-    };
   }, []);
 
   return (

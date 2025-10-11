@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import ProjectCard from "./ProjectCard";
 import ProjectDetail from "./ProjectDetail";
 import project1 from "@/assets/project-1.jpg";
@@ -9,8 +9,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
-const FRICTION = 0.95; // Seberapa cepat momentum berhenti (0.95 = lambat, 0.9 = cepat)
-const DRAG_MULTIPLIER = 2; // Seberapa responsif geseran (drag/swipe)
+const FRICTION = 0.95;
+const DRAG_MULTIPLIER = 2;
 
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
@@ -21,12 +21,11 @@ const ProjectsSection = () => {
   const animationFrameId = useRef<number | null>(null);
   const manualScrollSpeed = useRef(0);
 
-  // --- REFS UNTUK INTERAKSI GESER (DRAG/TOUCH) ---
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
   
-  const originalProjects = [
+  const originalProjects = useMemo(() => [
     { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -120, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
     { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 80, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation.", borderRadius: "rounded-xl" },
     { id: 3, title: "Mobile App", category: "Product", image: project3, size: "small", offsetY: -50, marginLeft: 20, description: "Native mobile application with seamless user experience.", borderRadius: "rounded-3xl" },
@@ -43,9 +42,22 @@ const ProjectsSection = () => {
     { id: 14, title: "Editorial Design", category: "Print", image: project2, size: "medium", offsetY: 140, marginLeft: 20, description: "Magazine and editorial layout design.", borderRadius: "rounded-xl" },
     { id: 15, title: "3D Renders", category: "3D", image: project3, size: "small", offsetY: -20, marginLeft: 45, description: "Photorealistic 3D rendering and visualization.", borderRadius: "rounded-2xl" },
     { id: 16, title: "Illustration Set", category: "Illustration", image: project4, size: "large", offsetY: 70, marginLeft: 15, description: "Custom illustration set for digital products.", borderRadius: "rounded-lg" },
-  ];
+  ], []);
 
-  const projects = isMobile ? originalProjects : [...originalProjects, ...originalProjects];
+  const [projects, setProjects] = useState(() =>
+    isMobile
+      ? originalProjects.slice().sort(() => Math.random() - 0.5)
+      : [...originalProjects, ...originalProjects]
+  );
+
+  useEffect(() => {
+    if (isMobile) {
+      setProjects(originalProjects.slice().sort(() => Math.random() - 0.5));
+    } else {
+      setProjects([...originalProjects, ...originalProjects]);
+    }
+  }, [isMobile, originalProjects]);
+
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
@@ -90,7 +102,7 @@ const ProjectsSection = () => {
       isDragging.current = true;
       startX.current = pageX - container.offsetLeft;
       scrollLeftStart.current = container.scrollLeft;
-      manualScrollSpeed.current = 0; // Hentikan momentum yang ada
+      manualScrollSpeed.current = 0;
       container.style.cursor = 'grabbing';
     };
 
@@ -100,7 +112,6 @@ const ProjectsSection = () => {
       const walk = (x - startX.current) * DRAG_MULTIPLIER;
       const newScrollLeft = scrollLeftStart.current - walk;
 
-      // Hitung kecepatan berdasarkan pergerakan terakhir untuk efek lemparan
       const velocity = newScrollLeft - scrollPosition.current;
       manualScrollSpeed.current = velocity;
 
@@ -114,7 +125,6 @@ const ProjectsSection = () => {
       container.style.cursor = 'grab';
     };
 
-    // --- EVENT LISTENERS ---
     const handleMouseDown = (e: MouseEvent) => handleDragStart(e.pageX);
     const handleMouseMove = (e: MouseEvent) => handleDragMove(e.pageX);
     const handleTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].pageX);
@@ -124,13 +134,9 @@ const ProjectsSection = () => {
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-
-    // Desktop Drag
     container.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleDragEnd);
-
-    // Mobile Touch
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchend', handleDragEnd);
@@ -146,8 +152,8 @@ const ProjectsSection = () => {
       window.removeEventListener('mouseup', handleDragEnd);
       container.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleDragEnd);
-      window.removeEventListener('touchcancel', handleDragEnd);
+      window.addEventListener('touchend', handleDragEnd);
+      window.addEventListener('touchcancel', handleDragEnd);
     };
   }, [isMobile, animateScroll]);
 
@@ -158,19 +164,26 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="w-full flex flex-col items-center gap-8 py-12 px-4">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              title={project.title}
-              category={project.category}
-              image={project.image}
-              size={project.size as "small" | "medium" | "large"}
-              index={index}
-              onClick={() => setSelectedProject(project.id)}
-              borderRadius={project.borderRadius}
-            />
-          ))}
+        <div className="w-full flex flex-col items-center gap-8 py-12 px-4 overflow-x-hidden">
+          {projects.map((project, index) => {
+            const randomOffset = useMemo(() => (Math.random() - 0.5) * 4, []); // Menghasilkan nilai antara -2rem dan 2rem
+            return (
+              <div 
+                key={`${project.id}-${index}`}
+                style={{ transform: `translateX(${randomOffset}rem)` }}
+              >
+                <ProjectCard
+                  title={project.title}
+                  category={project.category}
+                  image={project.image}
+                  size={project.size as "small" | "medium" | "large"}
+                  index={index}
+                  onClick={() => setSelectedProject(project.id)}
+                  borderRadius={project.borderRadius}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div

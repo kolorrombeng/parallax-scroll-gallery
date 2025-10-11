@@ -17,10 +17,10 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="bg-transparent">
         <Particles2D />
-        {/* Fungsionalitas klik dipindahkan kembali ke tombol terpisah */}
         <Header />
         
-        <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        {/* --- PERUBAHAN DI SINI: Hapus 'justify-center' --- */}
+        <main className="min-h-screen flex items-center overflow-hidden pt-16">
           <ProjectsSection />
         </main>
         

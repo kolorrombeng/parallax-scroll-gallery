@@ -16,24 +16,20 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* --- PERUBAHAN DI SINI: Nama "Tasyaf Designer" menjadi tombol close --- */}
-      <div className="fixed top-0 left-0 right-0 z-10 pointer-events-auto">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center">
-            <button onClick={onClose} className="text-left">
-              <h1 className="text-lg sm:text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
-                  Tasyaf Designer
-              </h1>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Tombol Close */}
+      <button
+        onClick={onClose}
+        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+        data-text="Close"
+      >
+        <span className="glitch-text">Close</span>
+      </button>
 
       {/* Kontainer untuk semua panel */}
-      <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none">
+      <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none flex flex-col md:block items-center justify-center md:items-stretch md:justify-normal">
         
         {/* Panel Utama: ABOUT ME */}
-        <div className="pointer-events-auto absolute top-[15%] left-[5%] w-[90%] md:w-[45%] h-auto rounded-xl border-2 border-foreground bg-background p-8 shadow-2xl">
+        <div className="pointer-events-auto w-[90%] max-w-2xl md:absolute md:top-[15%] md:left-[5%] md:w-[45%] h-auto rounded-3xl border-2 border-foreground bg-background p-8 shadow-2xl mb-6 md:mb-0">
           <h2 className="text-3xl font-bold uppercase tracking-widest mb-6">
             About Me
           </h2>
@@ -48,7 +44,7 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         </div>
 
         {/* Panel Kanan Atas: CREDITS */}
-        <div className="pointer-events-auto absolute top-[25%] right-[5%] w-auto max-w-[300px] rounded-xl border-2 border-foreground bg-background p-6 shadow-2xl hidden md:block">
+        <div className="pointer-events-auto w-[90%] max-w-2xl md:absolute md:top-[25%] md:right-[5%] md:w-auto md:max-w-[300px] rounded-3xl border-2 border-foreground bg-background p-6 shadow-2xl mb-6 md:mb-0">
           <h3 className="text-xl font-bold uppercase tracking-wider mb-4">
             Credits
           </h3>
@@ -65,7 +61,7 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         </div>
         
         {/* Panel Kiri Bawah: TECH STACK */}
-        <div className="pointer-events-auto absolute bottom-[15%] left-[10%] w-auto rounded-xl border-2 border-foreground bg-background p-6 shadow-2xl">
+        <div className="pointer-events-auto w-[90%] max-w-2xl md:absolute md:bottom-[15%] md:left-[10%] md:w-auto rounded-3xl border-2 border-foreground bg-background p-6 shadow-2xl">
           <h3 className="text-xl font-bold uppercase tracking-wider mb-4">
             Tech Stack
           </h3>

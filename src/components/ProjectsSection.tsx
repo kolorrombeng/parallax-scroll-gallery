@@ -165,7 +165,7 @@ const ProjectsSection = () => {
               title={project.title}
               category={project.category}
               image={project.image}
-              size={"large"}
+              size={project.size as "small" | "medium" | "large"}
               index={index}
               onClick={() => setSelectedProject(project.id)}
               borderRadius={project.borderRadius}

@@ -12,10 +12,22 @@ const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
 
-// New component to handle the mobile card with its own hook
+// Komponen baru untuk menangani kartu pada versi mobile dengan hook-nya sendiri
 const MobileProjectCard = ({ project, index, onClick }: { project: any, index: number, onClick: () => void }) => {
-  // useMemo is now correctly used at the top level of this component
-  const randomOffset = useMemo(() => (Math.random() - 0.5) * 4, []);
+  // Logika baru untuk memastikan offset tidak pernah nol
+  const randomOffset = useMemo(() => {
+    const minOffset = 1; // Jarak minimal dari tengah (dalam rem)
+    const maxOffset = 2; // Jarak maksimal dari tengah (dalam rem)
+    const range = maxOffset - minOffset;
+    
+    // Menghasilkan nilai acak antara minOffset dan maxOffset
+    const offset = minOffset + Math.random() * range;
+    
+    // Menentukan arah secara acak (kiri atau kanan)
+    const direction = Math.random() < 0.5 ? -1 : 1;
+    
+    return offset * direction;
+  }, []);
 
   return (
     <div

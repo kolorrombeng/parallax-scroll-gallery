@@ -8,8 +8,8 @@ import project4 from "@/assets/project-4.jpg";
 
 // --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
-const FRICTION = 0.95;
-const TOUCH_SCROLL_MULTIPLIER = 2; // Menentukan seberapa responsif geseran sentuh
+const FRICTION = 0.95; // Seberapa cepat momentum berhenti (0.95 = lambat, 0.9 = cepat)
+const DRAG_MULTIPLIER = 2; // Seberapa responsif geseran (drag/swipe)
 
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,11 +19,11 @@ const ProjectsSection = () => {
   const animationFrameId = useRef<number | null>(null);
   const manualScrollSpeed = useRef(0);
 
-  // --- REFS BARU UNTUK TOUCH HANDLING ---
+  // --- REFS UNTUK INTERAKSI GESER (DRAG/TOUCH) ---
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
-
+  
   const originalProjects = [
     { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -120, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
     { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 80, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation.", borderRadius: "rounded-xl" },
@@ -47,29 +47,27 @@ const ProjectsSection = () => {
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
-    
-    // --- MODIFIKASI: Jeda auto-scroll saat detail terbuka ATAU saat sedang di-drag ---
-    const currentScrollSpeed = (selectedProject === null && !isDragging.current) ? AUTO_SCROLL_SPEED : 0;
-    
-    scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
-    manualScrollSpeed.current *= FRICTION;
-
-    if (Math.abs(manualScrollSpeed.current) < 0.01) {
-      manualScrollSpeed.current = 0;
-    }
-
-    const scrollWidth = containerRef.current.scrollWidth;
-    const clientWidth = containerRef.current.clientWidth;
-    const maxScroll = scrollWidth - clientWidth;
-
-    if (scrollPosition.current >= maxScroll / 2) {
-      scrollPosition.current -= maxScroll / 2;
-    } else if (scrollPosition.current < 0) {
-      scrollPosition.current += maxScroll / 2;
-    }
 
     if (!isDragging.current) {
-        containerRef.current.scrollLeft = scrollPosition.current;
+      const currentScrollSpeed = selectedProject === null ? AUTO_SCROLL_SPEED : 0;
+      scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
+      manualScrollSpeed.current *= FRICTION;
+
+      if (Math.abs(manualScrollSpeed.current) < 0.01) {
+        manualScrollSpeed.current = 0;
+      }
+
+      const scrollWidth = containerRef.current.scrollWidth;
+      const clientWidth = containerRef.current.clientWidth;
+      const maxScroll = scrollWidth - clientWidth;
+      const halfScrollWidth = maxScroll / 2;
+
+      if (scrollPosition.current >= halfScrollWidth) {
+        scrollPosition.current -= halfScrollWidth;
+      } else if (scrollPosition.current < 0) {
+        scrollPosition.current += halfScrollWidth;
+      }
+      containerRef.current.scrollLeft = scrollPosition.current;
     }
 
     animationFrameId.current = requestAnimationFrame(animateScroll);
@@ -79,66 +77,83 @@ const ProjectsSection = () => {
     const container = containerRef.current;
     if (!container) return;
 
-    // --- MOUSE WHEEL EVENT ---
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       manualScrollSpeed.current += event.deltaY * 0.5;
     };
+
+    const handleDragStart = (pageX: number) => {
+      isDragging.current = true;
+      startX.current = pageX - container.offsetLeft;
+      scrollLeftStart.current = container.scrollLeft;
+      manualScrollSpeed.current = 0; // Hentikan momentum yang ada
+      container.style.cursor = 'grabbing';
+    };
+
+    const handleDragMove = (pageX: number) => {
+      if (!isDragging.current) return;
+      const x = pageX - container.offsetLeft;
+      const walk = (x - startX.current) * DRAG_MULTIPLIER;
+      const newScrollLeft = scrollLeftStart.current - walk;
+
+      // Hitung kecepatan berdasarkan pergerakan terakhir untuk efek lemparan
+      const velocity = newScrollLeft - scrollPosition.current;
+      manualScrollSpeed.current = velocity;
+
+      scrollPosition.current = newScrollLeft;
+      container.scrollLeft = newScrollLeft;
+    };
+
+    const handleDragEnd = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      container.style.cursor = 'grab';
+    };
+
+    // --- EVENT LISTENERS ---
+    const handleMouseDown = (e: MouseEvent) => handleDragStart(e.pageX);
+    const handleMouseMove = (e: MouseEvent) => handleDragMove(e.pageX);
+    const handleTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].pageX);
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      handleDragMove(e.touches[0].pageX);
+    };
+
     container.addEventListener("wheel", handleWheel, { passive: false });
 
-    // --- TOUCH EVENTS UNTUK MOBILE ---
-    const handleTouchStart = (event: TouchEvent) => {
-        isDragging.current = true;
-        startX.current = event.touches[0].pageX - container.offsetLeft;
-        scrollLeftStart.current = container.scrollLeft;
-        manualScrollSpeed.current = 0; // Hentikan momentum sebelumnya
-    };
+    // Desktop Drag
+    container.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleDragEnd);
 
-    const handleTouchMove = (event: TouchEvent) => {
-        if (!isDragging.current) return;
-        event.preventDefault();
-        const x = event.touches[0].pageX - container.offsetLeft;
-        const walk = (x - startX.current) * TOUCH_SCROLL_MULTIPLIER;
-        const newScrollLeft = scrollLeftStart.current - walk;
-        
-        // Hitung kecepatan untuk efek "flick" saat dilepas
-        manualScrollSpeed.current = container.scrollLeft - newScrollLeft;
-        
-        container.scrollLeft = newScrollLeft;
-        scrollPosition.current = newScrollLeft;
-    };
-
-    const handleTouchEnd = () => {
-        isDragging.current = false;
-    };
-    
+    // Mobile Touch
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    container.addEventListener('touchmove', handleTouchMove, { passive: false });
-    container.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('touchcancel', handleTouchEnd);
-    
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleDragEnd);
+    window.addEventListener('touchcancel', handleDragEnd);
+
     animationFrameId.current = requestAnimationFrame(animateScroll);
 
     return () => {
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleDragEnd);
       container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchmove', handleTouchMove);
-      container.removeEventListener('touchend', handleTouchEnd);
-      container.removeEventListener('touchcancel', handleTouchEnd);
-
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleDragEnd);
+      window.removeEventListener('touchcancel', handleDragEnd);
     };
   }, [animateScroll]);
 
-  const selectedProjectData = selectedProject !== null 
-    ? originalProjects.find(p => p.id === selectedProject) 
+  const selectedProjectData = selectedProject !== null
+    ? originalProjects.find(p => p.id === selectedProject)
     : null;
 
   return (
     <>
-      <div 
+      <div
         ref={containerRef}
         className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >

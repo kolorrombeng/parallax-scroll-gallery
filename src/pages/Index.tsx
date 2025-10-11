@@ -84,7 +84,7 @@ const Index = () => {
             </div>
         </footer>
 
-        {/* --- TOMBOL "ABOUT" YANG MENGAMBANG SUDAH DIHAPUS DARI SINI --- */}
+        {/* Tombol mengambang "About" sudah tidak ada lagi di sini */}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import '../index.css'; // <-- Impor file CSS yang sama
 
 interface AboutMeProps {
   isOpen: boolean;
@@ -18,12 +19,12 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* Tombol Close Vertikal */}
+      {/* Tombol Close Vertikal dengan Glitch */}
       <button
         onClick={onClose}
-        className="fixed top-0 right-0 z-10 h-full w-12 bg-foreground text-background flex items-center justify-center writing-mode-vertical-rl rotate-180 uppercase tracking-widest font-semibold text-sm hover:bg-foreground/80 transition-colors"
+        className="about-me-close-button" // <-- Gunakan class CSS baru
       >
-        Close
+        <span className="close-text">Close</span>
       </button>
 
       {/* Konten Panel */}

@@ -16,21 +16,18 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* --- TAMBAHKAN NAMA "TASAYAF DESIGNER" DI SINI --- */}
-      <div className="fixed top-0 left-0 z-10 p-6 container mx-auto">
-         <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
-            Tasyaf Designer
-         </h1>
+      {/* --- PERUBAHAN DI SINI: Replikasi struktur Header untuk posisi yang presisi --- */}
+      <div className="fixed top-0 left-0 right-0 z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center">
+             <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
+                Tasyaf Designer
+             </h1>
+          </div>
+        </div>
       </div>
 
-      {/* Tombol Close Vertikal */}
-      <button
-        onClick={onClose}
-        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-        data-text="Close"
-      >
-        <span className="glitch-text">Close</span>
-      </button>
+      {/* --- TOMBOL CLOSE DIHAPUS DARI SINI --- */}
 
       {/* Kontainer untuk semua panel */}
       <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none">
@@ -45,7 +42,7 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
               This is a demo portfolio by Tasyaf, created to showcase skills in graphic design and modern web development. The main goal is to build an engaging and visually appealing user experience.
             </p>
             <p>
-              The projects displayed are a mix of conceptual work and client commissions, reflecting a deep passion for clean aesthetics and intuitive design solutions that resonate with users.
+              The projects displayed are a mix of conceptual and client work, reflecting a deep passion for clean aesthetics and intuitive design solutions that resonate with users.
             </p>
           </div>
         </div>

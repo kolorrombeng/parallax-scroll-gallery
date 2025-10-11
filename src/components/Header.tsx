@@ -20,9 +20,11 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
   }
 
   return (
-    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
+    // Tambahkan pointer-events-none di sini
+    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        {/* Tambahkan pointer-events-auto di sini agar elemen di dalamnya bisa diklik */}
+        <div className="flex h-16 items-center justify-between pointer-events-auto">
           <div className="flex-shrink-0">
             <button onClick={onBrandClick} className="text-lg sm:text-xl font-semibold tracking-tight cursor-pointer">
               Tasyaf Designer

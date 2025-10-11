@@ -1,14 +1,9 @@
 import { Moon, Sun, Mail, Instagram, SquarePen, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { useEffect, useState, forwardRef } from "react";
+import { useEffect, useState } from "react";
 
-// Definisikan props baru untuk menerima fungsi klik
-interface HeaderProps {
-  onNameClick: () => void;
-}
-
-const Header = forwardRef<HTMLElement, HeaderProps>(({ onNameClick }, ref) => {
+const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -21,15 +16,14 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onNameClick }, ref) => {
   }
 
   return (
-    <header ref={ref} className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* --- PERUBAHAN DI SINI: Nama menjadi tombol --- */}
-          <button onClick={onNameClick} className="flex-shrink-0 text-left">
-            <h1 className="text-lg sm:text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
+          <div className="flex-shrink-0">
+            <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
               Tasyaf Designer
             </h1>
-          </button>
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
             <a
@@ -65,6 +59,6 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onNameClick }, ref) => {
       </div>
     </header>
   );
-});
+};
 
 export default Header;

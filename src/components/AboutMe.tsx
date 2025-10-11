@@ -15,6 +15,22 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         className="absolute inset-0 bg-background/50 backdrop-blur-sm"
         onClick={onClose}
       />
+      
+      {/* --- TAMBAHKAN NAMA "TASAYAF DESIGNER" DI SINI --- */}
+      <div className="fixed top-0 left-0 z-10 p-6 container mx-auto">
+         <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
+            Tasyaf Designer
+         </h1>
+      </div>
+
+      {/* Tombol Close Vertikal */}
+      <button
+        onClick={onClose}
+        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+        data-text="Close"
+      >
+        <span className="glitch-text">Close</span>
+      </button>
 
       {/* Kontainer untuk semua panel */}
       <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none">

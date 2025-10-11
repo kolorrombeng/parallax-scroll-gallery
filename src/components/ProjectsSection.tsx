@@ -9,6 +9,7 @@ import project4 from "@/assets/project-4.jpg";
 // --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
+const TOUCH_SCROLL_MULTIPLIER = 2; // Menentukan seberapa responsif geseran sentuh
 
 const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,6 +18,11 @@ const ProjectsSection = () => {
   const scrollPosition = useRef(0);
   const animationFrameId = useRef<number | null>(null);
   const manualScrollSpeed = useRef(0);
+
+  // --- REFS BARU UNTUK TOUCH HANDLING ---
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
 
   const originalProjects = [
     { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -120, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
@@ -41,11 +47,13 @@ const ProjectsSection = () => {
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
-
-    // --- PERUBAHAN UTAMA: Jeda auto-scroll saat project detail terbuka ---
-    const currentScrollSpeed = selectedProject === null ? AUTO_SCROLL_SPEED : 0;
+    
+    // --- MODIFIKASI: Jeda auto-scroll saat detail terbuka ATAU saat sedang di-drag ---
+    const currentScrollSpeed = (selectedProject === null && !isDragging.current) ? AUTO_SCROLL_SPEED : 0;
+    
     scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
     manualScrollSpeed.current *= FRICTION;
+
     if (Math.abs(manualScrollSpeed.current) < 0.01) {
       manualScrollSpeed.current = 0;
     }
@@ -59,31 +67,70 @@ const ProjectsSection = () => {
     } else if (scrollPosition.current < 0) {
       scrollPosition.current += maxScroll / 2;
     }
-    
-    containerRef.current.scrollLeft = scrollPosition.current;
+
+    if (!isDragging.current) {
+        containerRef.current.scrollLeft = scrollPosition.current;
+    }
+
     animationFrameId.current = requestAnimationFrame(animateScroll);
-  }, [selectedProject]); // Tambahkan selectedProject sebagai dependency
+  }, [selectedProject]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
+    // --- MOUSE WHEEL EVENT ---
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
       manualScrollSpeed.current += event.deltaY * 0.5;
     };
-
     container.addEventListener("wheel", handleWheel, { passive: false });
+
+    // --- TOUCH EVENTS UNTUK MOBILE ---
+    const handleTouchStart = (event: TouchEvent) => {
+        isDragging.current = true;
+        startX.current = event.touches[0].pageX - container.offsetLeft;
+        scrollLeftStart.current = container.scrollLeft;
+        manualScrollSpeed.current = 0; // Hentikan momentum sebelumnya
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+        if (!isDragging.current) return;
+        event.preventDefault();
+        const x = event.touches[0].pageX - container.offsetLeft;
+        const walk = (x - startX.current) * TOUCH_SCROLL_MULTIPLIER;
+        const newScrollLeft = scrollLeftStart.current - walk;
+        
+        // Hitung kecepatan untuk efek "flick" saat dilepas
+        manualScrollSpeed.current = container.scrollLeft - newScrollLeft;
+        
+        container.scrollLeft = newScrollLeft;
+        scrollPosition.current = newScrollLeft;
+    };
+
+    const handleTouchEnd = () => {
+        isDragging.current = false;
+    };
+    
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('touchcancel', handleTouchEnd);
     
     animationFrameId.current = requestAnimationFrame(animateScroll);
 
     return () => {
       container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('touchcancel', handleTouchEnd);
+
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
     };
-  }, [animateScroll]); // animateScroll sudah mencakup selectedProject
+  }, [animateScroll]);
 
   const selectedProjectData = selectedProject !== null 
     ? originalProjects.find(p => p.id === selectedProject) 
@@ -95,7 +142,6 @@ const ProjectsSection = () => {
         ref={containerRef}
         className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
       >
-        {/* PERUBAHAN UTAMA ADA DI BARIS INI */}
         <div className="h-full w-max flex py-48 px-12">
           <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
             {projects.map((project, index) => (

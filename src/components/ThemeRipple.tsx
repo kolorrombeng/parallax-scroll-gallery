@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
+// Mendefinisikan tipe data untuk properti ripple
 interface Ripple {
   x: number;
   y: number;
-  color: string;
-  bgColor: string;
+  color: string;    // Warna tema BARU
+  bgColor: string;  // Warna tema LAMA
 }
 
 interface ThemeRippleProps {
@@ -12,29 +13,41 @@ interface ThemeRippleProps {
   onAnimationComplete: () => void;
 }
 
-const DURATION = 600; // Durasi animasi dalam milidetik
+const DURATION = 700; // Durasi animasi dalam milidetik
 
 const ThemeRipple: React.FC<ThemeRippleProps> = ({ ripple, onAnimationComplete }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [activeRipple, setActiveRipple] = useState<Ripple | null>(null);
 
   useEffect(() => {
     if (ripple) {
-      setIsAnimating(true);
-      const timer = setTimeout(() => {
+      setActiveRipple(ripple);
+      const animationTimer = setTimeout(() => {
         onAnimationComplete();
-        // Setelah animasi selesai, tunggu sebentar sebelum menghapus elemen
-        setTimeout(() => setIsAnimating(false), DURATION);
       }, DURATION);
-      return () => clearTimeout(timer);
+
+      const cleanupTimer = setTimeout(() => {
+        setActiveRipple(null);
+      }, DURATION + 50); // Hapus elemen setelah animasi selesai
+
+      return () => {
+        clearTimeout(animationTimer);
+        clearTimeout(cleanupTimer);
+      };
     }
   }, [ripple, onAnimationComplete]);
 
-  if (!ripple) return null;
+  if (!activeRipple) return null;
 
+  // Hitung radius yang dibutuhkan untuk menutupi seluruh layar dari titik klik
   const maxRadius = Math.hypot(
-    Math.max(ripple.x, window.innerWidth - ripple.x),
-    Math.max(ripple.y, window.innerHeight - ripple.y)
+    Math.max(activeRipple.x, window.innerWidth - activeRipple.x),
+    Math.max(activeRipple.y, window.innerHeight - activeRipple.y)
   );
+
+  // Tentukan warna bayangan berdasarkan tema baru
+  const shadowColor = activeRipple.color === '#000000' 
+    ? 'rgba(255, 255, 255, 0.15)' 
+    : 'rgba(0, 0, 0, 0.25)';
 
   return (
     <div
@@ -46,33 +59,38 @@ const ThemeRipple: React.FC<ThemeRippleProps> = ({ ripple, onAnimationComplete }
         height: '100vh',
         zIndex: 9999,
         pointerEvents: 'none',
-        backgroundColor: ripple.bgColor, // Latar belakang adalah warna tema lama
+        // Latar belakang diatur ke warna tema LAMA
+        backgroundColor: activeRipple.bgColor,
       }}
     >
+      {/* Keyframes CSS dibuat secara dinamis untuk menangkap posisi klik */}
       <style>
         {`
           @keyframes ripple-reveal {
             from {
-              clip-path: circle(0% at ${ripple.x}px ${ripple.y}px);
+              clip-path: circle(0px at ${activeRipple.x}px ${activeRipple.y}px);
             }
             to {
-              clip-path: circle(${maxRadius}px at ${ripple.x}px ${ripple.y}px);
+              clip-path: circle(${maxRadius}px at ${activeRipple.x}px ${activeRipple.y}px);
             }
           }
-          .ripple-effect {
-            animation: ripple-reveal ${DURATION}ms ease-out forwards;
+          .ripple-effect-circle {
+            animation: ripple-reveal ${DURATION}ms ease-in-out forwards;
           }
         `}
       </style>
       <div
-        className="ripple-effect"
+        className="ripple-effect-circle"
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-          backgroundColor: ripple.color, // Lapisan atas adalah warna tema baru
+          // Lapisan atas adalah warna tema BARU
+          backgroundColor: activeRipple.color,
+          // Tambahkan efek bayangan di sekeliling lingkaran yang membesar
+          boxShadow: `0 0 50px 20px ${shadowColor}`,
         }}
       />
     </div>

@@ -12,6 +12,28 @@ const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
 
+// New component to handle the mobile card with its own hook
+const MobileProjectCard = ({ project, index, onClick }: { project: any, index: number, onClick: () => void }) => {
+  // useMemo is now correctly used at the top level of this component
+  const randomOffset = useMemo(() => (Math.random() - 0.5) * 4, []);
+
+  return (
+    <div
+      style={{ transform: `translateX(${randomOffset}rem)` }}
+    >
+      <ProjectCard
+        title={project.title}
+        category={project.category}
+        image={project.image}
+        size={project.size as "small" | "medium" | "large"}
+        index={index}
+        onClick={onClick}
+        borderRadius={project.borderRadius}
+      />
+    </div>
+  );
+};
+
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -165,25 +187,14 @@ const ProjectsSection = () => {
     <>
       {isMobile ? (
         <div className="w-full flex flex-col items-center gap-8 py-12 px-4 overflow-x-hidden">
-          {projects.map((project, index) => {
-            const randomOffset = useMemo(() => (Math.random() - 0.5) * 4, []); // Menghasilkan nilai antara -2rem dan 2rem
-            return (
-              <div 
-                key={`${project.id}-${index}`}
-                style={{ transform: `translateX(${randomOffset}rem)` }}
-              >
-                <ProjectCard
-                  title={project.title}
-                  category={project.category}
-                  image={project.image}
-                  size={project.size as "small" | "medium" | "large"}
-                  index={index}
-                  onClick={() => setSelectedProject(project.id)}
-                  borderRadius={project.borderRadius}
-                />
-              </div>
-            );
-          })}
+          {projects.map((project, index) => (
+            <MobileProjectCard
+              key={`${project.id}-${index}`}
+              project={project}
+              index={index}
+              onClick={() => setSelectedProject(project.id)}
+            />
+          ))}
         </div>
       ) : (
         <div

@@ -22,7 +22,7 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onTitleClick }, ref) => {
 
   return (
     // Hapus "border-b" dari className
-    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md">
+    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md transition-colors duration-300 ease-in-out">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">

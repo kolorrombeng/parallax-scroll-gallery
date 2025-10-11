@@ -11,12 +11,8 @@ const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
 
-// --- PROPS BARU ---
-interface ProjectsSectionProps {
-  onAboutClick: () => void;
-}
-
-const ProjectsSection = ({ onAboutClick }: ProjectsSectionProps) => {
+// Hapus prop onAboutClick
+const ProjectsSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
@@ -151,14 +147,6 @@ const ProjectsSection = ({ onAboutClick }: ProjectsSectionProps) => {
 
   return (
     <>
-      {/* Tombol About vertikal */}
-      <button 
-        onClick={onAboutClick}
-        className="fixed top-0 left-0 z-30 h-full w-12 bg-foreground text-background flex items-center justify-center writing-mode-vertical-rl rotate-180 uppercase tracking-widest font-semibold text-sm hover:bg-foreground/80 transition-colors"
-      >
-        About
-      </button>
-
       <div 
         ref={containerRef}
         className="w-full overflow-hidden cursor-grab active:cursor-grabbing"

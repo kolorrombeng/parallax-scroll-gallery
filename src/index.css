@@ -127,7 +127,6 @@
 .glitch-button-vertical:hover::before,
 .glitch-button-vertical:hover::after {
   opacity: 1;
-  animation: glitch-effect 0.7s infinite linear alternate-reverse;
 }
 
 .glitch-button-vertical:hover::before {

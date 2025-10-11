@@ -3,9 +3,8 @@ import React, { useEffect, useRef } from 'react';
 interface Ripple {
   x: number;
   y: number;
-  maxRadius: number;
   startTime: number;
-  color: string;
+  backgroundColor: string;
 }
 
 interface ThemeRippleProps {
@@ -13,65 +12,140 @@ interface ThemeRippleProps {
   onAnimationComplete: () => void;
 }
 
-const DURATION = 800; // Durasi animasi dalam milidetik
-const WAVE_COUNT = 5; // Jumlah gelombang untuk efek kedalaman
-const WAVE_SPACING = 100; // Jarak antar gelombang
+const DURATION = 1200; // Durasi animasi dalam milidetik
+const DAMPENING = 0.985; // Faktor redaman untuk gelombang
 
 const ThemeRipple: React.FC<ThemeRippleProps> = ({ ripple, onAnimationComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameId = useRef<number | null>(null);
+  const backgroundRef = useRef<HTMLCanvasElement | null>(null);
 
+  // 1. Tangkap tampilan halaman saat ini
   useEffect(() => {
-    if (!ripple) return;
+    if (ripple) {
+      const mainContent = document.documentElement;
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = window.innerWidth;
+      tempCanvas.height = window.innerHeight;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      if (tempCtx) {
+        // Trik untuk "screenshot": gambar ulang konten HTML ke canvas
+        const xml = new XMLSerializer().serializeToString(mainContent);
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${window.innerWidth}" height="${window.innerHeight}">
+            <foreignObject width="100%" height="100%">
+              <div xmlns="http://www.w3.org/1999/xhtml">${xml}</div>
+            </foreignObject>
+          </svg>
+        `;
+        const img = new Image();
+        const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+        
+        img.onload = () => {
+          tempCtx.drawImage(img, 0, 0);
+          backgroundRef.current = tempCanvas;
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      }
+    } else {
+        backgroundRef.current = null;
+    }
+  }, [ripple]);
+
+  // 2. Animasikan riak air
+  useEffect(() => {
+    if (!ripple || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    let animationFrameId: number;
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // Buffer untuk menyimpan data gelombang
+    let buffer1 = new Float32Array(width * height);
+    let buffer2 = new Float32Array(width * height);
+    
+    // Inisialisasi riak awal
+    const rippleX = Math.floor(ripple.x);
+    const rippleY = Math.floor(ripple.y);
+
+    for (let y = -10; y < 10; y++) {
+        for (let x = -10; x < 10; x++) {
+            if (x * x + y * y < 10 * 10) {
+                const index = (rippleY + y) * width + (rippleX + x);
+                if (index >= 0 && index < buffer1.length) {
+                    buffer1[index] = 1.0;
+                }
+            }
+        }
+    }
+
 
     const animate = () => {
-      const elapsedTime = Date.now() - ripple.startTime;
-      const progress = Math.min(elapsedTime / DURATION, 1);
-
-      // Gunakan fungsi "ease-out" untuk membuat gerakan terasa lebih natural
-      const easeOutProgress = 1 - Math.pow(1 - progress, 4);
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Gambar gelombang-gelombang riak
-      for (let i = 0; i < WAVE_COUNT; i++) {
-        // Setiap gelombang dimulai sedikit lebih lambat dari sebelumnya
-        const waveProgress = Math.max(0, easeOutProgress - i * 0.08);
-
-        if (waveProgress > 0) {
-          const radius = waveProgress * (ripple.maxRadius + i * WAVE_SPACING);
-          // Gelombang akan memudar seiring membesar
-          const opacity = 0.5 * (1 - waveProgress);
-
-          const color = ripple.color === '#000000' ? '0,0,0' : '255,255,255';
-          ctx.fillStyle = `rgba(${color}, ${opacity})`;
-          ctx.beginPath();
-          ctx.arc(ripple.x, ripple.y, radius, 0, 2 * Math.PI);
-          ctx.fill();
-        }
+      if (!backgroundRef.current) {
+        animationFrameId.current = requestAnimationFrame(animate);
+        return;
       }
 
-      // Gambar lingkaran utama yang mengisi layar
-      const mainRadius = easeOutProgress * ripple.maxRadius;
+      const imageData = ctx.createImageData(width, height);
+      const destData = imageData.data;
+      const srcCtx = backgroundRef.current.getContext('2d');
+      if (!srcCtx) return;
+      const srcData = srcCtx.getImageData(0, 0, width, height).data;
+
+      for (let i = 0; i < width * height; i++) {
+        // Kalkulasi perambatan gelombang
+        const x = i % width;
+        const y = Math.floor(i / width);
+        let waveHeight =
+          ((buffer1[((y - 1) * width + x)] || 0) +
+            (buffer1[((y + 1) * width + x)] || 0) +
+            (buffer1[(y * width + x - 1)] || 0) +
+            (buffer1[(y * width + x + 1)] || 0)) / 2 - buffer2[i];
+        
+        buffer2[i] = waveHeight * DAMPENING;
+
+        // Hitung offset distorsi
+        const offsetX = Math.floor((buffer2[(y * width + x - 1)] || 0) - (buffer2[(y * width + x + 1)] || 0));
+        const offsetY = Math.floor((buffer2[((y - 1) * width + x)] || 0) - (buffer2[((y + 1) * width + x)] || 0));
+
+        // Ambil piksel dari gambar latar belakang dengan offset
+        const displacedX = Math.max(0, Math.min(width - 1, x + offsetX));
+        const displacedY = Math.max(0, Math.min(height - 1, y + offsetY));
+        const srcIndex = (displacedY * width + displacedX) * 4;
+
+        // Salin piksel ke buffer tujuan
+        const destIndex = i * 4;
+        destData[destIndex] = srcData[srcIndex];
+        destData[destIndex + 1] = srcData[srcIndex + 1];
+        destData[destIndex + 2] = srcData[srcIndex + 2];
+        destData[destIndex + 3] = 255;
+      }
+      
+      // Tukar buffer untuk frame berikutnya
+      [buffer1, buffer2] = [buffer2, buffer1];
+
+      ctx.putImageData(imageData, 0, 0);
+
+      // Fade in ke warna tema baru
+      const elapsedTime = Date.now() - ripple.startTime;
+      const progress = Math.min(elapsedTime / DURATION, 1);
       ctx.fillStyle = ripple.color;
-      ctx.beginPath();
-      ctx.arc(ripple.x, ripple.y, mainRadius, 0, 2 * Math.PI);
-      ctx.fill();
+      ctx.globalAlpha = Math.pow(progress, 3); // easeInCubic
+      ctx.fillRect(0, 0, width, height);
+      ctx.globalAlpha = 1.0;
 
       if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
+        animationFrameId.current = requestAnimationFrame(animate);
       } else {
-        // Panggil onAnimationComplete setelah lingkaran utama selesai
         onAnimationComplete();
       }
     };
@@ -79,7 +153,9 @@ const ThemeRipple: React.FC<ThemeRippleProps> = ({ ripple, onAnimationComplete }
     animate();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
   }, [ripple, onAnimationComplete]);
 

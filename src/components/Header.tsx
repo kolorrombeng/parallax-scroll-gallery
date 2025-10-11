@@ -1,4 +1,4 @@
-import { Moon, Sun, Mail, Github, Linkedin } from "lucide-react";
+import { Moon, Sun, Mail, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ const Header = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="GitHub"
+                aria-label="Instagram"
               >
                 <Github className="h-4 w-4" />
               </a>

@@ -1,13 +1,9 @@
 import { Moon, Sun, Mail, Instagram, SquarePen, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState } from "react";
 
-interface HeaderProps {
-  onBrandClick: () => void;
-}
-
-const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
+const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -20,17 +16,19 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
   }
 
   return (
-    // Latar belakang header tidak akan menangkap event mouse
-    <header ref={ref} className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Konten di dalam header akan menangkap event mouse seperti biasa */}
-        <div className="flex h-16 items-center justify-between pointer-events-auto">
+        <div className="flex h-16 items-center justify-between">
+          {/* Logo/Name */}
           <div className="flex-shrink-0">
-            <button onClick={onBrandClick} className="text-lg sm:text-xl font-semibold tracking-tight cursor-pointer">
+            <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
               Tasyaf Designer
-            </button>
+            </h1>
           </div>
+
+          {/* Contact Info & Theme Toggle */}
           <div className="flex items-center gap-2 sm:gap-4">
+            {/* --- PERUBAHAN DI SINI --- */}
             <a
               href="mailto:hello@designer.com"
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -39,17 +37,40 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
               <Mail className="h-4 w-4" />
               <span className="hidden md:inline">hello@designer.com</span>
             </a>
+
             <div className="flex items-center gap-3">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Instagram">
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Instagram"
+              >
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Behance">
+
+              <a
+                href="https://behance.net"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Behance"
+              >
                 <SquarePen className="h-4 w-4" />
               </a>
-              <a href="https://wa.me/yourphonenumber" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="WhatsApp">
+
+              <a
+                href="https://wa.me/yourphonenumber" // Ganti dengan nomor WhatsApp Anda
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="WhatsApp"
+              >
                 <MessageSquare className="h-4 w-4" />
               </a>
             </div>
+
+            {/* Theme Toggle */}
             <Button
               variant="ghost"
               size="icon"
@@ -57,13 +78,17 @@ const Header = forwardRef<HTMLElement, HeaderProps>(({ onBrandClick }, ref) => {
               className="ml-2"
               aria-label="Toggle theme"
             >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              {theme === "dark" ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
       </div>
     </header>
   );
-});
+};
 
 export default Header;

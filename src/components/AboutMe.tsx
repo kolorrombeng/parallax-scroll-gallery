@@ -18,12 +18,12 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* Tombol Close */}
+      {/* Tombol Close Vertikal */}
       <button
         onClick={onClose}
-        className="fixed top-6 right-6 z-10 flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity"
+        className="fixed top-0 right-0 z-10 h-full w-12 bg-foreground text-background flex items-center justify-center writing-mode-vertical-rl rotate-180 uppercase tracking-widest font-semibold text-sm hover:bg-foreground/80 transition-colors"
       >
-        Close <X size={16} />
+        Close
       </button>
 
       {/* Konten Panel */}

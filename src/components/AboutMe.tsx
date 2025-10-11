@@ -10,51 +10,75 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-background/50 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* --- TOMBOL CLOSE VERTIKAL DIHAPUS DARI SINI --- */}
+      {/* Tombol Close Vertikal */}
+      <button
+        onClick={onClose}
+        className="glitch-button-vertical fixed top-6 right-6 z-10 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+        data-text="Close"
+      >
+        <span className="glitch-text">Close</span>
+      </button>
 
-      <div className="relative h-full w-full pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12 pointer-events-auto">
-          <h2 className="mb-6 text-2xl font-bold uppercase tracking-widest md:text-3xl">
+      {/* Kontainer untuk semua panel */}
+      <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none">
+        
+        {/* Panel Utama: ABOUT ME */}
+        <div className="pointer-events-auto absolute top-[15%] left-[5%] w-[90%] md:w-[45%] h-auto rounded-xl border-2 border-foreground bg-background p-8 shadow-2xl">
+          <h2 className="text-3xl font-bold uppercase tracking-widest mb-6">
             About Me
           </h2>
-          <p className="mb-4 text-muted-foreground">
-            This is a demo portfolio created by Tasyaf, showcasing skills in graphic design and web development. The goal is to create an engaging and visually appealing user experience.
-          </p>
-          <p className="text-muted-foreground">
-            The projects displayed are a collection of conceptual and client work, reflecting a passion for clean aesthetics and intuitive design solutions.
-          </p>
+          <div className="space-y-4 text-muted-foreground">
+            <p>
+              This is a demo portfolio by Tasyaf, created to showcase skills in graphic design and modern web development. The main goal is to build an engaging and visually appealing user experience.
+            </p>
+            <p>
+              The projects displayed are a mix of conceptual work and client commissions, reflecting a deep passion for clean aesthetics and intuitive design solutions that resonate with users.
+            </p>
+          </div>
         </div>
 
-        <div className="absolute bottom-10 left-10 w-auto rounded-lg border-2 border-foreground bg-background p-6 pointer-events-auto">
-          <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
-            Tech Stack
+        {/* Panel Kanan Atas: CREDITS */}
+        <div className="pointer-events-auto absolute top-[25%] right-[5%] w-auto max-w-[300px] rounded-xl border-2 border-foreground bg-background p-6 shadow-2xl hidden md:block">
+          <h3 className="text-xl font-bold uppercase tracking-wider mb-4">
+            Credits
           </h3>
-          <div className="flex gap-8 text-sm text-muted-foreground">
-            <div>
-              <p>React</p>
-              <p>TypeScript</p>
-            </div>
-            <div>
-              <p>Vite</p>
-              <p>Tailwind CSS</p>
-            </div>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p className="flex justify-between gap-4">
+              <span>Inspiration</span>
+              <a href="https://p5aholic.me/" target="_blank" className="hover:text-foreground font-semibold">@p5aholic</a>
+            </p>
+            <p className="flex justify-between gap-4">
+              <span>UI Framework</span>
+              <a href="https://ui.shadcn.com/" target="_blank" className="hover:text-foreground font-semibold">shadcn/ui</a>
+            </p>
           </div>
         </div>
         
-        <div className="absolute bottom-10 right-10 hidden w-auto rounded-lg border-2 border-foreground bg-background p-6 md:block pointer-events-auto">
-          <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
-            Credits
+        {/* Panel Kiri Bawah: TECH STACK */}
+        <div className="pointer-events-auto absolute bottom-[15%] left-[10%] w-auto rounded-xl border-2 border-foreground bg-background p-6 shadow-2xl">
+          <h3 className="text-xl font-bold uppercase tracking-wider mb-4">
+            Tech Stack
           </h3>
-          <div className="space-y-1 text-sm text-muted-foreground">
-            <p><span className="w-20 inline-block">Inspiration:</span> <a href="https://p5aholic.me/" target="_blank" className="hover:text-foreground">p5aholic.me</a></p>
-            <p><span className="w-20 inline-block">UI:</span> <a href="https://ui.shadcn.com/" target="_blank" className="hover:text-foreground">shadcn/ui</a></p>
+          <div className="flex gap-12 text-sm text-muted-foreground">
+            <ul className="list-none space-y-1">
+              <li>React</li>
+              <li>TypeScript</li>
+              <li>Vite</li>
+            </ul>
+            <ul className="list-none space-y-1">
+              <li>Tailwind CSS</li>
+              <li>Framer Motion</li>
+              <li>p5.js</li>
+            </ul>
           </div>
         </div>
+        
       </div>
     </div>
   );

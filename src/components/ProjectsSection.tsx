@@ -10,6 +10,11 @@ import project4 from "@/assets/project-4.jpg";
 const AUTO_SCROLL_SPEED = 0.4; 
 const FRICTION = 0.95; 
 
+// Tambahkan tipe untuk prop baru
+interface ProjectsSectionProps {
+  isDetailOpen: boolean;
+}
+
 const ProjectsSection = ({ isDetailOpen }: ProjectsSectionProps) => { // Terima prop di sini
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);

@@ -95,34 +95,37 @@
   }
 }
 
-.about-button {
+.glitch-button-vertical {
+  width: 48px;  /* Lebar tombol (w-12) */
+  height: 140px; /* Tinggi tombol yang lebih pendek */
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   overflow: hidden;
-  /* position: relative; <-- BARIS INI DIHAPUS */
+  position: relative; /* Diperlukan untuk pseudo-elements */
   border: none;
 }
 
-.about-text {
+.glitch-text {
   position: relative;
   display: inline-block;
   transition: transform 0.3s ease;
 }
 
-.about-button:hover .about-text {
+.glitch-button-vertical:hover .glitch-text {
   transform: translateY(-2px);
 }
 
-.about-button::before,
-.about-button::after {
-  content: 'About';
+.glitch-button-vertical::before,
+.glitch-button-vertical::after {
+  /* Ambil teks dari atribut data-text pada elemen HTML */
+  content: attr(data-text);
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: black;
-  color: white;
+  /* Warisi warna latar belakang dari tombol */
+  background: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,124 +136,35 @@
   pointer-events: none;
 }
 
-.about-button::before {
+.glitch-button-vertical::before {
   color: cyan;
   z-index: 1;
 }
 
-.about-button::after {
+.glitch-button-vertical::after {
   color: red;
   z-index: 2;
 }
 
-.about-button:hover::before,
-.about-button:hover::after {
+.glitch-button-vertical:hover::before,
+.glitch-button-vertical:hover::after {
   opacity: 1;
   animation: glitch-effect 0.7s infinite linear alternate-reverse;
 }
 
-.about-button:hover::before {
+.glitch-button-vertical:hover::before {
   animation-delay: 0.1s;
 }
 
-.about-button:hover::after {
-  animation-delay: 0.2s;
-}
-
-.about-me-close-button {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 10;
-  height: 100%;
-  width: 12px;
-  background-color: black;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 600;
-  font-size: 0.75rem;
-  cursor: pointer;
-  overflow: hidden;
-  border: none;
-}
-
-.about-me-close-button .close-text {
-  position: relative;
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-
-.about-me-close-button:hover .close-text {
-  transform: translateY(-2px);
-}
-
-.about-me-close-button::before,
-.about-me-close-button::after {
-  content: 'Close';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.about-me-close-button::before {
-  color: cyan;
-  z-index: 1;
-}
-
-.about-me-close-button::after {
-  color: red;
-  z-index: 2;
-}
-
-.about-me-close-button:hover::before,
-.about-me-close-button:hover::after {
-  opacity: 1;
-  animation: glitch-effect 0.7s infinite linear alternate-reverse;
-}
-
-.about-me-close-button:hover::before {
-  animation-delay: 0.1s;
-}
-
-.about-me-close-button:hover::after {
+.glitch-button-vertical:hover::after {
   animation-delay: 0.2s;
 }
 
 @keyframes glitch-effect {
-  0% {
-    transform: rotate(180deg) translate(0px, 0px);
-  }
-  20% {
-    transform: rotate(180deg) translate(-2px, 2px);
-  }
-  40% {
-    transform: rotate(180deg) translate(1px, -1px);
-  }
-  60% {
-    transform: rotate(180deg) translate(-1px, 1px);
-  }
-  80% {
-    transform: rotate(180deg) translate(2px, -2px);
-  }
-  100% {
-    transform: rotate(180deg) translate(0px, 0px);
-  }
+  0% { transform: rotate(180deg) translate(0px, 0px); }
+  20% { transform: rotate(180deg) translate(-2px, 2px); }
+  40% { transform: rotate(180deg) translate(1px, -1px); }
+  60% { transform: rotate(180deg) translate(-1px, 1px); }
+  80% { transform: rotate(180deg) translate(2px, -2px); }
+  100% { transform: rotate(180deg) translate(0px, 0px); }
 }

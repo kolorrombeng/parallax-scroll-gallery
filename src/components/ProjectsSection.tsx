@@ -5,6 +5,7 @@ import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
@@ -12,6 +13,7 @@ const FRICTION = 0.95; // Seberapa cepat momentum berhenti (0.95 = lambat, 0.9 =
 const DRAG_MULTIPLIER = 2; // Seberapa responsif geseran (drag/swipe)
 
 const ProjectsSection = () => {
+  const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
@@ -43,7 +45,7 @@ const ProjectsSection = () => {
     { id: 16, title: "Illustration Set", category: "Illustration", image: project4, size: "large", offsetY: 70, marginLeft: 15, description: "Custom illustration set for digital products.", borderRadius: "rounded-lg" },
   ];
 
-  const projects = [...originalProjects, ...originalProjects];
+  const projects = isMobile ? originalProjects : [...originalProjects, ...originalProjects];
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
@@ -74,6 +76,8 @@ const ProjectsSection = () => {
   }, [selectedProject]);
 
   useEffect(() => {
+    if (isMobile) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -145,7 +149,7 @@ const ProjectsSection = () => {
       window.removeEventListener('touchend', handleDragEnd);
       window.removeEventListener('touchcancel', handleDragEnd);
     };
-  }, [animateScroll]);
+  }, [isMobile, animateScroll]);
 
   const selectedProjectData = selectedProject !== null
     ? originalProjects.find(p => p.id === selectedProject)
@@ -153,35 +157,52 @@ const ProjectsSection = () => {
 
   return (
     <>
-      <div
-        ref={containerRef}
-        className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
-      >
-        <div className="h-full w-max flex py-48 px-12">
-          <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-            {projects.map((project, index) => (
-              <div
-                key={`${project.id}-${index}`}
-                style={{
-                  transform: `translateY(${project.offsetY}px)`,
-                  marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
-                }}
-                className="flex-shrink-0"
-              >
-                <ProjectCard
-                  title={project.title}
-                  category={project.category}
-                  image={project.image}
-                  size={project.size as "small" | "medium" | "large"}
-                  index={index}
-                  onClick={() => setSelectedProject(project.id)}
-                  borderRadius={project.borderRadius}
-                />
-              </div>
-            ))}
+      {isMobile ? (
+        <div className="w-full flex flex-col items-center gap-8 py-12 px-4">
+          {projects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              title={project.title}
+              category={project.category}
+              image={project.image}
+              size={"large"}
+              index={index}
+              onClick={() => setSelectedProject(project.id)}
+              borderRadius={project.borderRadius}
+            />
+          ))}
+        </div>
+      ) : (
+        <div
+          ref={containerRef}
+          className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
+        >
+          <div className="h-full w-max flex py-48 px-12">
+            <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
+              {projects.map((project, index) => (
+                <div
+                  key={`${project.id}-${index}`}
+                  style={{
+                    transform: `translateY(${project.offsetY}px)`,
+                    marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
+                  }}
+                  className="flex-shrink-0"
+                >
+                  <ProjectCard
+                    title={project.title}
+                    category={project.category}
+                    image={project.image}
+                    size={project.size as "small" | "medium" | "large"}
+                    index={index}
+                    onClick={() => setSelectedProject(project.id)}
+                    borderRadius={project.borderRadius}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {selectedProjectData && (
         <ProjectDetail

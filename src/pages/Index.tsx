@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
+import { useIsMobile } from "@/hooks/use-mobile"; // Impor hook
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -12,11 +13,12 @@ const Index = () => {
   const touchStartY = useRef(0);
 
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const isMobile = useIsMobile(); // Panggil hook
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const forwardWheelScroll = (e: WheelEvent) => {
+    const forwardScroll = (e: WheelEvent) => {
       e.preventDefault();
       window.scrollBy({ top: e.deltaY, left: 0, behavior: 'auto' });
     };
@@ -35,36 +37,39 @@ const Index = () => {
     const headerEl = headerRef.current;
     const footerEl = footerRef.current;
 
-    if (headerEl) {
-      headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
-      headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
-      headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
-    }
-    if (footerEl) {
-      footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
-      footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
-      footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    // --- PERUBAHAN DI SINI: Hanya aktifkan jika mobile ---
+    if (isMobile) {
+      if (headerEl) {
+        headerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+        headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+      }
+      if (footerEl) {
+        footerEl.addEventListener('wheel', forwardScroll, { passive: false });
+        footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+        footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+      }
     }
 
     return () => {
+      // Cleanup tetap berjalan untuk memastikan tidak ada listener yang tertinggal
       if (headerEl) {
-        headerEl.removeEventListener('wheel', forwardWheelScroll);
+        headerEl.removeEventListener('wheel', forwardScroll);
         headerEl.removeEventListener('touchstart', handleTouchStart);
         headerEl.removeEventListener('touchmove', handleTouchMove);
       }
       if (footerEl) {
-        footerEl.removeEventListener('wheel', forwardWheelScroll);
+        footerEl.removeEventListener('wheel', forwardScroll);
         footerEl.removeEventListener('touchstart', handleTouchStart);
         footerEl.removeEventListener('touchmove', handleTouchMove);
       }
     };
-  }, []);
+  }, [isMobile]); // Tambahkan isMobile sebagai dependency
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="bg-transparent">
         <Particles2D />
-        {/* --- PERUBAHAN DI SINI: Teruskan fungsi toggle --- */}
         <Header ref={headerRef} onNameClick={() => setIsAboutOpen(prev => !prev)} />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -81,7 +86,14 @@ const Index = () => {
             </div>
         </footer>
 
-        {/* --- TOMBOL ABOUT YANG MENGAMBANG DIHAPUS DARI SINI --- */}
+        {!isAboutOpen && (
+          <button
+            onClick={() => setIsAboutOpen(true)}
+            className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+          >
+            <span className="glitch-text">About</span>
+          </button>
+        )}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

@@ -1,13 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ThemeProvider } from "next-themes";
 import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
+import AboutMe from "@/components/AboutMe";
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const currentYear = new Date().getFullYear();
+  const [isAboutMeOpen, setIsAboutMeOpen] = useState(false);
 
   // Ref untuk menyimpan posisi sentuhan awal di mobile
   const touchStartY = useRef(0);
@@ -79,7 +81,8 @@ const Index = () => {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <div className="bg-transparent">
         <Particles2D />
-        <Header ref={headerRef} />
+        <Header ref={headerRef} onTitleClick={() => setIsAboutMeOpen(true)} />
+        <AboutMe isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />

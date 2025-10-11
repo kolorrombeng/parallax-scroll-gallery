@@ -16,18 +16,18 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
-      {/* --- PERUBAHAN DI SINI: Replikasi struktur Header untuk posisi yang presisi --- */}
-      <div className="fixed top-0 left-0 right-0 z-10">
+      {/* --- PERUBAHAN DI SINI: Nama "Tasyaf Designer" menjadi tombol close --- */}
+      <div className="fixed top-0 left-0 right-0 z-10 pointer-events-auto">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center">
-             <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
-                Tasyaf Designer
-             </h1>
+            <button onClick={onClose} className="text-left">
+              <h1 className="text-lg sm:text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity">
+                  Tasyaf Designer
+              </h1>
+            </button>
           </div>
         </div>
       </div>
-
-      {/* --- TOMBOL CLOSE DIHAPUS DARI SINI --- */}
 
       {/* Kontainer untuk semua panel */}
       <div className="relative h-full w-full p-4 md:p-8 lg:p-16 pointer-events-none">

@@ -85,9 +85,10 @@ const Index = () => {
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="about-button fixed top-0 right-0 z-50 h-full w-12 flex items-center justify-center bg-black text-white text-base font-bold uppercase tracking-widest cursor-pointer"
+            className="glitch-button-vertical fixed top-1/2 right-6 -translate-y-1/2 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
+            data-text="About"
           >
-            <span className="about-text">About</span>
+            <span className="glitch-text">About</span>
           </button>
         )}
         

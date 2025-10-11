@@ -67,8 +67,7 @@ const Index = () => {
         <Header ref={headerRef} />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
-          {/* Teruskan fungsi set state ke ProjectsSection */}
-          <ProjectsSection onAboutClick={() => setIsAboutOpen(true)} />
+          <ProjectsSection />
 
           <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
@@ -80,6 +79,16 @@ const Index = () => {
             </div>
           </footer>
         </main>
+        
+        {/* --- TOMBOL ABOUT BARU DI SINI --- */}
+        {!isAboutOpen && (
+          <button
+            onClick={() => setIsAboutOpen(true)}
+            className="fixed top-6 right-6 z-30 bg-foreground text-background px-4 py-2 text-xs font-semibold uppercase tracking-widest rounded-md hover:bg-foreground/80 transition-colors"
+          >
+            About
+          </button>
+        )}
         
         <AboutMe isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>

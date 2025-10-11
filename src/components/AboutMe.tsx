@@ -15,59 +15,44 @@ const AboutMe = ({ isOpen, onClose }: AboutMeProps) => {
         onClick={onClose}
       />
       
+      {/* --- TOMBOL CLOSE VERTIKAL DIHAPUS DARI SINI --- */}
+
       <div className="relative h-full w-full pointer-events-none">
-        {/* Main Content Card - Left Side, starts from top */}
-        <div className="absolute top-0 left-0 bottom-0 w-[60%] rounded-none border-2 border-l-0 border-t-0 border-b-0 border-foreground bg-background p-8 md:p-12 pointer-events-auto overflow-y-auto">
-          <h2 className="mb-8 text-4xl md:text-6xl font-bold uppercase tracking-widest">
-            100 Days of Poetry
+        <div className="absolute top-1/2 left-1/2 w-[90vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg border-2 border-foreground bg-background p-8 md:p-12 pointer-events-auto">
+          <h2 className="mb-6 text-2xl font-bold uppercase tracking-widest md:text-3xl">
+            About Me
           </h2>
-          <div className="space-y-6 text-sm md:text-base leading-relaxed">
-            <p>
-              <span className="font-bold">100 DAYS OF POETRY</span> is an artwork, which consists of a graphic design <span className="font-bold underline">Notty</span> created per day for 100 days.
-            </p>
-            <p>
-              These 100 days were also the days when he faced his own complexes and frustrations. He thought he could get closer to his ideal self by doing this project.
-            </p>
-            <p>
-              He did not create each work as a separate piece of art, but instead expressed his feelings and thoughts as 100 graphics as if he were writing a poetry.
-            </p>
-          </div>
-          <p className="mt-8 text-sm text-right text-muted-foreground italic">
-            Written by Keita Yamada
+          <p className="mb-4 text-muted-foreground">
+            This is a demo portfolio created by Tasyaf, showcasing skills in graphic design and web development. The goal is to create an engaging and visually appealing user experience.
+          </p>
+          <p className="text-muted-foreground">
+            The projects displayed are a collection of conceptual and client work, reflecting a passion for clean aesthetics and intuitive design solutions.
           </p>
         </div>
 
-        {/* Credit Card - Top Right */}
-        <div className="absolute top-0 right-0 w-[40%] rounded-none border-2 border-r-0 border-t-0 border-foreground bg-background p-8 pointer-events-auto">
-          <h3 className="mb-6 text-5xl md:text-6xl font-bold uppercase tracking-wider">
-            Credit
+        <div className="absolute bottom-10 left-10 w-auto rounded-lg border-2 border-foreground bg-background p-6 pointer-events-auto">
+          <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
+            Tech Stack
           </h3>
-          <div className="space-y-3 text-sm md:text-base">
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">100 Poetries</span>
-              <span className="font-medium">@re_natty</span>
+          <div className="flex gap-8 text-sm text-muted-foreground">
+            <div>
+              <p>React</p>
+              <p>TypeScript</p>
             </div>
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground">Web Site</span>
-              <span className="font-medium">@P5_keita</span>
+            <div>
+              <p>Vite</p>
+              <p>Tailwind CSS</p>
             </div>
           </div>
         </div>
-
-        {/* Fonts Card - Bottom Right */}
-        <div className="absolute bottom-0 right-0 w-[40%] rounded-none border-2 border-r-0 border-b-0 border-foreground bg-background p-8 pointer-events-auto">
-          <h3 className="mb-6 text-5xl md:text-6xl font-bold uppercase tracking-wider">
-            Fonts
+        
+        <div className="absolute bottom-10 right-10 hidden w-auto rounded-lg border-2 border-foreground bg-background p-6 md:block pointer-events-auto">
+          <h3 className="mb-3 text-lg font-bold uppercase tracking-wider">
+            Credits
           </h3>
-          <div className="space-y-3 text-sm md:text-base">
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground whitespace-nowrap">Le Murmure</span>
-              <span className="font-medium text-right underline">Jérémy Landes, Velvetyne</span>
-            </div>
-            <div className="flex justify-between gap-4">
-              <span className="text-muted-foreground whitespace-nowrap">Neogrotesk</span>
-              <span className="font-medium text-right underline">Los Andes, MyFonts</span>
-            </div>
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <p><span className="w-20 inline-block">Inspiration:</span> <a href="https://p5aholic.me/" target="_blank" className="hover:text-foreground">p5aholic.me</a></p>
+            <p><span className="w-20 inline-block">UI:</span> <a href="https://ui.shadcn.com/" target="_blank" className="hover:text-foreground">shadcn/ui</a></p>
           </div>
         </div>
       </div>

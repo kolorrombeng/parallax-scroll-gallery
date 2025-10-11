@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 
 // --- KONFIGURASI PARTIKEL ---
-const PARTICLE_COUNT = 2000;
+const PARTICLE_COUNT = 1500;
 const INTERACTION_RADIUS = 150;
 const REPULSION_STRENGTH = 2.5;
 const PARTICLE_SIZE = 0.8;

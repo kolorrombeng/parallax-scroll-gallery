@@ -12,6 +12,7 @@ interface Ripple {
   maxRadius: number;
   startTime: number;
   color: string;
+  bgColor: string;
 }
 
 const IndexContent = () => {
@@ -39,20 +40,70 @@ const IndexContent = () => {
       y,
       maxRadius,
       startTime: Date.now(),
-      color: newTheme === 'dark' ? '#000000' : '#ffffff',
+      color: newTheme === 'dark' ? '#000000' : '#ffffff', // Warna tema baru
+      bgColor: theme === 'dark' ? '#000000' : '#ffffff', // Warna tema lama
     });
   };
   
   const onRippleAnimationComplete = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
+    // Gunakan timeout untuk memastikan perubahan tema diterapkan sebelum menghapus kanvas
     setTimeout(() => {
         setRipple(null);
-    }, 100);
+    }, 50);
   };
 
   useEffect(() => {
-    // ... (Logika scroll Anda tetap di sini)
+    window.scrollTo(0, 0);
+
+    const forwardWheelScroll = (e: WheelEvent) => {
+      e.preventDefault();
+      window.scrollBy({
+        top: e.deltaY,
+        left: 0,
+        behavior: 'auto',
+      });
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touchCurrentY = e.touches[0].clientY;
+      const deltaY = touchStartY.current - touchCurrentY;
+      
+      window.scrollBy(0, deltaY);
+    };
+    
+    const headerEl = headerRef.current;
+    const footerEl = footerRef.current;
+
+    if (headerEl) {
+      headerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
+      headerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+      headerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+    if (footerEl) {
+      footerEl.addEventListener('wheel', forwardWheelScroll, { passive: false });
+      footerEl.addEventListener('touchstart', handleTouchStart, { passive: false });
+      footerEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+
+    return () => {
+      if (headerEl) {
+        headerEl.removeEventListener('wheel', forwardWheelScroll);
+        headerEl.removeEventListener('touchstart', handleTouchStart);
+        headerEl.removeEventListener('touchmove', handleTouchMove);
+      }
+      if (footerEl) {
+        footerEl.removeEventListener('wheel', forwardWheelScroll);
+        footerEl.removeEventListener('touchstart', handleTouchStart);
+        footerEl.removeEventListener('touchmove', handleTouchMove);
+      }
+    };
   }, []);
 
   return (

@@ -1,5 +1,4 @@
 import { X } from 'lucide-react';
-import '../index.css'; // <-- Impor file CSS yang sama
 
 interface AboutMeProps {
   isOpen: boolean;

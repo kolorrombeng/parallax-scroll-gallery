@@ -4,8 +4,6 @@ import { useTheme } from 'next-themes';
 // --- KONFIGURASI PARTIKEL ---
 const PARTICLE_COUNT = 1500;     // Jumlah partikel bisa dikurangi agar tidak terlalu ramai
 const MAX_SPEED = 0.5;           // Kecepatan maksimum partikel
-const INTERACTION_RADIUS = 120;  // Radius interaksi kursor
-const REPULSION_STRENGTH = 0.5;  // Kekuatan dorongan dari kursor (dikurangi agar lebih halus)
 const PARTICLE_SIZE = 0.5;
 
 // Tipe data untuk partikel
@@ -19,7 +17,6 @@ interface Particle {
 const Particles2D: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: -9999, y: -9999 });
   const { theme } = useTheme();
 
   const particleColor = useMemo(() => (theme === 'dark' ? '#ffffff' : '#000000'), [theme]);
@@ -50,32 +47,12 @@ const Particles2D: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseRef.current = { x: event.clientX, y: event.clientY };
-    };
-    const handleMouseLeave = () => {
-        mouseRef.current = { x: -9999, y: -9999 };
-    }
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
-
     let animationFrameId: number;
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = particleColor;
 
       particlesRef.current.forEach(p => {
-        // Interaksi dengan kursor
-        const dx = mouseRef.current.x - p.x;
-        const dy = mouseRef.current.y - p.y;
-        const distance = Math.hypot(dx, dy);
-
-        if (distance < INTERACTION_RADIUS) {
-          const force = (INTERACTION_RADIUS - distance) / INTERACTION_RADIUS;
-          p.vx -= (dx / distance) * force * REPULSION_STRENGTH;
-          p.vy -= (dy / distance) * force * REPULSION_STRENGTH;
-        }
-        
         // Update posisi partikel
         p.x += p.vx;
         p.y += p.vy;
@@ -98,8 +75,6 @@ const Particles2D: React.FC = () => {
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
   }, [particleColor]);

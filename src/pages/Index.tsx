@@ -71,23 +71,22 @@ const Index = () => {
         </main>
         
         <footer ref={footerRef} className="fixed bottom-0 left-0 right-0 z-40 h-12 bg-background/80 backdrop-blur-md">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
-            <div className="flex justify-center items-center h-full">
-              <p className="text-sm text-muted-foreground">
-                © {currentYear} Demo Website Tasyaf
-              </p>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full">
+              <div className="flex justify-center items-center h-full">
+                <p className="text-sm text-muted-foreground">
+                  © {currentYear} Demo Website Tasyaf
+                </p>
+              </div>
             </div>
-          </div>
         </footer>
 
         {/* --- PERUBAHAN DI SINI --- */}
         {!isAboutOpen && (
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="glitch-button-vertical fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
-            data-text="About"
+            className="vertical-button fixed top-6 right-6 z-50 flex items-center justify-center bg-foreground text-background text-base font-bold uppercase tracking-widest cursor-pointer"
           >
-            <span className="glitch-text">About</span>
+            <span className="vertical-text">About</span>
           </button>
         )}
         

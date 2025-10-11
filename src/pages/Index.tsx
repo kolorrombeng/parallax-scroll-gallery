@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
-import './index.css'; // <-- Impor file CSS baru
+import '../index.css'; // <-- Impor file CSS baru
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);

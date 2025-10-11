@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 
 // --- KONFIGURASI PARTIKEL ---
-const PARTICLE_COUNT = 1500;
+const PARTICLE_COUNT = 1200; // Dikurangi untuk performa
 const INTERACTION_RADIUS = 150;
 const REPULSION_STRENGTH = 2.5;
 const PARTICLE_SIZE = 0.8;
 const CONNECTION_DISTANCE = 80;
 const LINE_OPACITY = 0.15;
+const MAX_CONNECTIONS_PER_PARTICLE = 3; // Batasi jumlah koneksi per partikel
 
 // --- KONFIGURASI FLOW FIELD ---
 const NOISE_SPEED = 0.0008;
@@ -98,7 +99,15 @@ const Particles2D: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       const colors = getColors();
-      frameRef.current += NOISE_SPEED;
+      
+      // Loop time - oscillates between 0 and LOOP_DURATION
+      const loopTime = frameRef.current % LOOP_DURATION;
+      const loopProgress = loopTime / LOOP_DURATION; // 0 to 1
+      
+      // Smooth loop dengan sine wave untuk transisi halus
+      const loopPhase = Math.sin(loopProgress * Math.PI * 2) * 0.5 + 0.5;
+      
+      frameRef.current += 1;
 
       // Update particles
       particlesRef.current.forEach(p => {
@@ -123,11 +132,12 @@ const Particles2D: React.FC = () => {
         p.x += p.vx;
         p.y += p.vy;
 
-        // Wrap around screen
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
-        if (p.y < -10) p.y = canvas.height + 10;
-        if (p.y > canvas.height + 10) p.y = -10;
+        // Batasi jarak dari base position (soft boundary)
+        const distFromBase = Math.hypot(dx, dy);
+        if (distFromBase > 200) {
+          p.x = p.baseX + (p.x - p.baseX) * 0.95;
+          p.y = p.baseY + (p.y - p.baseY) * 0.95;
+        }
       });
 
       // Draw connections (optional, for depth)
@@ -196,6 +206,12 @@ const Particles2D: React.FC = () => {
         margin: '0 auto',
         color: themeRef.current === 'dark' ? '#ffffff' : '#000000',
       }}>
+        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+          Particle Background
+        </h1>
+        <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>
+          Inspired by p5aholic.me
+        </p>
       </div>
     </div>
   );

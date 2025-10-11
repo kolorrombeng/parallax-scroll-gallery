@@ -264,12 +264,6 @@ const Particles2D: React.FC = () => {
         margin: '0 auto',
         color: themeRef.current === 'dark' ? '#ffffff' : '#000000',
       }}>
-        <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-          Particle Background
-        </h1>
-        <p style={{ fontSize: '1.2rem', opacity: 0.7 }}>
-          Inspired by p5aholic.me
-        </p>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import plugin from 'tailwindcss/plugin'; // <-- Impor plugin
+import plugin from 'tailwindcss/plugin';
 
 export default {
   darkMode: ["class"],
@@ -96,6 +96,14 @@ export default {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "zoom-in": {
+            "0%": { opacity: "0", transform: "scale(0.9)" },
+            "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "zoom-out": {
+            "0%": { opacity: "1", transform: "scale(1)" },
+            "100%": { opacity: "0", transform: "scale(0.9)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -103,22 +111,18 @@ export default {
         "scroll-left": "scroll-left 40s linear infinite",
         "scroll-right": "scroll-right 40s linear infinite",
         "fade-in": "fade-in 0.6s ease-out",
+        "zoom-in": "zoom-in 0.3s ease-out",
+        "zoom-out": "zoom-out 0.3s ease-in",
       },
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    // Tambahkan plugin untuk menyembunyikan scrollbar
     plugin(function({ addUtilities }) {
       addUtilities({
         '.scrollbar-hide': {
-          /* IE and Edge */
           '-ms-overflow-style': 'none',
-
-          /* Firefox */
           'scrollbar-width': 'none',
-
-          /* Safari and Chrome */
           '&::-webkit-scrollbar': {
             display: 'none'
           }

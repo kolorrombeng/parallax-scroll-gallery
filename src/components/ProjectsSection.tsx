@@ -14,6 +14,7 @@ const DRAG_MULTIPLIER = 2;
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
+  const mobileContainerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   const scrollPosition = useRef(0);
@@ -48,6 +49,8 @@ const ProjectsSection = () => {
       ? originalProjects
       : [...originalProjects, ...originalProjects]
   );
+  
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
     if (isMobile) {
@@ -56,6 +59,41 @@ const ProjectsSection = () => {
       setProjects([...originalProjects, ...originalProjects]);
     }
   }, [isMobile, originalProjects]);
+
+  const handleMobileScroll = () => {
+    const container = mobileContainerRef.current;
+    if (!container) return;
+
+    const scrollTop = window.scrollY;
+    const containerTop = container.offsetTop;
+    const containerHeight = container.offsetHeight;
+    const windowHeight = window.innerHeight;
+
+    const start = containerTop;
+    const end = containerTop + containerHeight - windowHeight;
+
+    if (scrollTop >= start && scrollTop <= end) {
+      const progress = (scrollTop - start) / (end - start);
+      setScrollProgress(progress);
+    } else if (scrollTop < start) {
+      setScrollProgress(0);
+    } else {
+      setScrollProgress(1);
+    }
+  };
+
+  useEffect(() => {
+    if (isMobile) {
+      window.addEventListener('scroll', handleMobileScroll);
+      handleMobileScroll(); // Initial check
+    }
+    
+    return () => {
+      if (isMobile) {
+        window.removeEventListener('scroll', handleMobileScroll);
+      }
+    };
+  }, [isMobile]);
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current || isMobile) return;
@@ -167,12 +205,33 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="w-full h-[80vh] overflow-y-auto snap-y snap-mandatory pt-24 pb-24">
-            <div className="relative w-full flex flex-col items-center">
-                {projects.map((project, index) => (
+        <div ref={mobileContainerRef} className="w-full" style={{ height: `${100 + (projects.length - 1) * 50}vh` }}>
+            <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+              {projects.map((project, index) => {
+                const progressPerCard = 1 / (projects.length - 1);
+                const cardStartProgress = index * progressPerCard;
+                
+                let scale = 1 - (index * 0.05);
+                let opacity = 1;
+                let translateY = index * -50;
+
+                if (scrollProgress > cardStartProgress) {
+                  const localProgress = Math.min((scrollProgress - cardStartProgress) / progressPerCard, 1);
+                  scale = 1 - (index * 0.05) - (localProgress * 0.05);
+                  opacity = 1 - (localProgress * 0.5);
+                  translateY = (index - localProgress) * -50;
+                }
+
+                return (
                     <div
                         key={`${project.id}-${index}`}
-                        className="w-full flex justify-center snap-start py-4 -mt-40 first:mt-0"
+                        className="absolute w-full h-full flex justify-center items-center"
+                        style={{ 
+                          transform: `scale(${scale}) translateY(${translateY}px)`,
+                          opacity: opacity,
+                          zIndex: projects.length - index,
+                          transition: 'transform 0.3s ease-out, opacity 0.3s ease-out',
+                        }}
                     >
                         <ProjectCard
                             {...project}
@@ -181,7 +240,8 @@ const ProjectsSection = () => {
                             onClick={() => setSelectedProject(project.id)}
                         />
                     </div>
-                ))}
+                );
+              })}
             </div>
         </div>
       ) : (

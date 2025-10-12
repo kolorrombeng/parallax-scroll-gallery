@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 
 const PARTICLE_COUNT = 60;
 const PATTERN_RADIUS = 120;
-const MIN_LOADING_TIME = 2500;
+const MIN_LOADING_TIME = 1500;
 
 interface LoadingParticle {
   x: number;
@@ -57,16 +57,16 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
       };
     });
 
-    // Simulate loading progress
+    // Simulate loading progress - faster increments
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        return Math.min(prev + Math.random() * 3, 100);
+        return Math.min(prev + Math.random() * 8 + 2, 100);
       });
-    }, 100);
+    }, 80);
 
     // Animation loop
     let animationFrameId: number;
@@ -142,9 +142,9 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
         setIsExiting(true);
         setTimeout(() => {
           onLoadingComplete();
-        }, 800);
+        }, 1000);
       } else {
-        setTimeout(checkCompletion, 100);
+        setTimeout(checkCompletion, 50);
       }
     };
 
@@ -158,17 +158,19 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-opacity duration-800 ${
-        isExiting ? 'opacity-0' : 'opacity-100'
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-all duration-1000 ease-out ${
+        isExiting ? 'opacity-0 scale-110' : 'opacity-100 scale-100'
       }`}
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0"
+        className={`absolute inset-0 transition-opacity duration-1000 ${
+          isExiting ? 'opacity-0' : 'opacity-100'
+        }`}
       />
       
       <div className="relative z-10 text-center space-y-8">
-        <div className="text-6xl font-bold text-foreground opacity-0 animate-fade-in">
+        <div className="text-6xl font-bold text-foreground animate-fade-in">
           {Math.floor(progress)}%
         </div>
         

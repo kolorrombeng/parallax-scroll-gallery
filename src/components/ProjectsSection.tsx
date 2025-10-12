@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import ProjectCard from "./ProjectCard";
 import ProjectDetail from "./ProjectDetail";
+
 import project1 from "@/assets/project-1.jpg";
 import project2 from "@/assets/project-2.jpg";
 import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
+
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const AUTO_SCROLL_SPEED = 0.4;
@@ -25,6 +27,7 @@ const ProjectsSection = () => {
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
 
+  // 🧱 Daftar 16 Project
   const originalProjects = useMemo(
     () => [
       { id: 1, title: "Brand Identity", category: "Branding", image: project1, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
@@ -33,6 +36,16 @@ const ProjectsSection = () => {
       { id: 4, title: "Visual System", category: "Design System", image: project4, description: "Comprehensive design system for consistent user interfaces.", borderRadius: "rounded-lg" },
       { id: 5, title: "E-commerce", category: "Web Design", image: project1, description: "Full-featured e-commerce platform with modern checkout flow.", borderRadius: "rounded-3xl" },
       { id: 6, title: "Art Direction", category: "Creative", image: project2, description: "Creative direction for digital and print campaigns.", borderRadius: "rounded-xl" },
+      { id: 7, title: "Dashboard UI", category: "UI Design", image: project3, description: "Data-rich dashboard interface for enterprise software.", borderRadius: "rounded-2xl" },
+      { id: 8, title: "Illustration Set", category: "Art", image: project4, description: "Custom illustration set for digital branding and product UI.", borderRadius: "rounded-xl" },
+      { id: 9, title: "Corporate Website", category: "Web Dev", image: project1, description: "Responsive corporate site for global business presence.", borderRadius: "rounded-3xl" },
+      { id: 10, title: "Motion Graphics", category: "Animation", image: project2, description: "Animated explainer videos and digital ads.", borderRadius: "rounded-lg" },
+      { id: 11, title: "Portfolio Design", category: "Creative", image: project3, description: "Minimalist personal portfolio design system.", borderRadius: "rounded-2xl" },
+      { id: 12, title: "App Redesign", category: "UI/UX", image: project4, description: "Redesigning legacy mobile app for better UX flow.", borderRadius: "rounded-xl" },
+      { id: 13, title: "AR Experience", category: "Product", image: project1, description: "Augmented reality shopping experience prototype.", borderRadius: "rounded-3xl" },
+      { id: 14, title: "Landing Page", category: "Web", image: project2, description: "High-converting landing page for SaaS startup.", borderRadius: "rounded-xl" },
+      { id: 15, title: "NFT Collection", category: "Digital Art", image: project3, description: "Stylized NFT art collection and marketplace visuals.", borderRadius: "rounded-lg" },
+      { id: 16, title: "Design Tokens", category: "System", image: project4, description: "Tokenized design system for scalable UI libraries.", borderRadius: "rounded-3xl" },
     ],
     []
   );
@@ -51,6 +64,7 @@ const ProjectsSection = () => {
     }
   }, [isMobile, originalProjects]);
 
+  // === MOBILE: scroll progress handler ===
   const handleMobileScroll = () => {
     const container = mobileContainerRef.current;
     if (!container) return;
@@ -83,6 +97,7 @@ const ProjectsSection = () => {
     };
   }, [isMobile]);
 
+  // === DESKTOP AUTO-SCROLL ===
   const animateScroll = useCallback(() => {
     if (!containerRef.current || isMobile) return;
 
@@ -91,9 +106,7 @@ const ProjectsSection = () => {
       scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
       manualScrollSpeed.current *= FRICTION;
 
-      if (Math.abs(manualScrollSpeed.current) < 0.01) {
-        manualScrollSpeed.current = 0;
-      }
+      if (Math.abs(manualScrollSpeed.current) < 0.01) manualScrollSpeed.current = 0;
 
       const scrollWidth = containerRef.current.scrollWidth;
       const clientWidth = containerRef.current.clientWidth;
@@ -105,6 +118,7 @@ const ProjectsSection = () => {
       } else if (scrollPosition.current < 0) {
         scrollPosition.current += halfScrollWidth;
       }
+
       containerRef.current.scrollLeft = scrollPosition.current;
     }
 
@@ -113,9 +127,7 @@ const ProjectsSection = () => {
 
   useEffect(() => {
     if (isMobile) {
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       return;
     }
 
@@ -194,7 +206,7 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        // === MOBILE STACKED SCROLL REVEAL DENGAN PARALLAX ===
+        // === MOBILE STACKED SCROLL REVEAL TANPA PARALLAX ===
         <div
           ref={mobileContainerRef}
           className="relative w-full"
@@ -213,8 +225,6 @@ const ProjectsSection = () => {
                 localProgress = 1;
               }
 
-              // Parallax background (bergerak lambat)
-              const parallaxTranslate = localProgress * -30; // lebih kecil untuk efek depth
               const translateY = localProgress * -100;
               const scale = 1 - localProgress * 0.1;
               const opacity = Math.max(0, 1 - localProgress * 1.2);
@@ -223,23 +233,8 @@ const ProjectsSection = () => {
                 <div
                   key={`${project.id}-${index}`}
                   className="absolute w-full h-full flex justify-center items-center"
-                  style={{
-                    zIndex: projects.length - index,
-                  }}
+                  style={{ zIndex: projects.length - index }}
                 >
-                  {/* Background Parallax */}
-                  <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url(${project.image})`,
-                      transform: `translateY(${parallaxTranslate}px) scale(1.2)`,
-                      opacity: 0.2,
-                      filter: "blur(10px)",
-                      transition: "transform 0.6s ease-out, opacity 0.6s ease-out",
-                    }}
-                  />
-
-                  {/* Foreground Card */}
                   <div
                     style={{
                       transform: `translateY(${translateY}%) scale(${scale})`,

@@ -30,7 +30,7 @@ const ProjectDetail = ({ title, category, image, description, isOpen, onClose }:
       >
         <div
           className="relative w-full max-w-2xl max-h-[90vh] bg-card border border-border rounded-xl overflow-hidden flex flex-col"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat diklik di dalam
         >
           {/* Tombol Tutup */}
           <Button

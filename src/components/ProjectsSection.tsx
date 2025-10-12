@@ -167,16 +167,22 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="flex flex-col items-center gap-12 py-12 w-full">
-            {projects.map((project, index) => (
-                <ProjectCard
-                    key={`${project.id}-${index}`}
-                    {...project}
-                    size="large" // Memaksa ukuran seragam
-                    index={index}
-                    onClick={() => setSelectedProject(project.id)}
-                />
-            ))}
+        <div className="w-full h-[80vh] overflow-y-auto snap-y snap-mandatory pt-24 pb-24">
+            <div className="relative w-full flex flex-col items-center">
+                {projects.map((project, index) => (
+                    <div
+                        key={`${project.id}-${index}`}
+                        className="w-full flex justify-center snap-start py-4 -mt-40 first:mt-0"
+                    >
+                        <ProjectCard
+                            {...project}
+                            size="large" // Memaksa ukuran seragam
+                            index={index}
+                            onClick={() => setSelectedProject(project.id)}
+                        />
+                    </div>
+                ))}
+            </div>
         </div>
       ) : (
         <div

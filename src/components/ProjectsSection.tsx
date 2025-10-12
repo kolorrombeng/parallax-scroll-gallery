@@ -7,44 +7,9 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
-
-// Komponen baru untuk menangani kartu pada versi mobile dengan hook-nya sendiri
-const MobileProjectCard = ({ project, index, onClick }: { project: any, index: number, onClick: () => void }) => {
-  // Logika baru untuk memastikan offset tidak pernah nol
-  const randomOffset = useMemo(() => {
-    const minOffset = 1; // Jarak minimal dari tengah (dalam rem)
-    const maxOffset = 2; // Jarak maksimal dari tengah (dalam rem)
-    const range = maxOffset - minOffset;
-    
-    // Menghasilkan nilai acak antara minOffset dan maxOffset
-    const offset = minOffset + Math.random() * range;
-    
-    // Menentukan arah secara acak (kiri atau kanan)
-    const direction = Math.random() < 0.5 ? -1 : 1;
-    
-    return offset * direction;
-  }, []);
-
-  return (
-    <div
-      style={{ transform: `translateX(${randomOffset}rem)` }}
-    >
-      <ProjectCard
-        title={project.title}
-        category={project.category}
-        image={project.image}
-        size={project.size as "small" | "medium" | "large"}
-        index={index}
-        onClick={onClick}
-        borderRadius={project.borderRadius}
-      />
-    </div>
-  );
-};
 
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
@@ -80,36 +45,43 @@ const ProjectsSection = () => {
 
   const [projects, setProjects] = useState(() =>
     isMobile
-      ? originalProjects.slice().sort(() => Math.random() - 0.5)
+      ? originalProjects
       : [...originalProjects, ...originalProjects]
   );
+  
+  const [scroll, setScroll] = useState(0);
 
   useEffect(() => {
     if (isMobile) {
-      setProjects(originalProjects.slice().sort(() => Math.random() - 0.5));
-    } else {
+      const handleScroll = () => {
+        setScroll(window.scrollY);
+      };
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (!isMobile) {
       setProjects([...originalProjects, ...originalProjects]);
+    } else {
+      setProjects(originalProjects);
     }
   }, [isMobile, originalProjects]);
 
-
   const animateScroll = useCallback(() => {
     if (!containerRef.current) return;
-
     if (!isDragging.current) {
       const currentScrollSpeed = selectedProject === null ? AUTO_SCROLL_SPEED : 0;
       scrollPosition.current += manualScrollSpeed.current + currentScrollSpeed;
       manualScrollSpeed.current *= FRICTION;
-
       if (Math.abs(manualScrollSpeed.current) < 0.01) {
         manualScrollSpeed.current = 0;
       }
-
       const scrollWidth = containerRef.current.scrollWidth;
       const clientWidth = containerRef.current.clientWidth;
       const maxScroll = scrollWidth - clientWidth;
       const halfScrollWidth = maxScroll / 2;
-
       if (scrollPosition.current >= halfScrollWidth) {
         scrollPosition.current -= halfScrollWidth;
       } else if (scrollPosition.current < 0) {
@@ -117,13 +89,11 @@ const ProjectsSection = () => {
       }
       containerRef.current.scrollLeft = scrollPosition.current;
     }
-
     animationFrameId.current = requestAnimationFrame(animateScroll);
   }, [selectedProject]);
 
   useEffect(() => {
     if (isMobile) return;
-
     const container = containerRef.current;
     if (!container) return;
 
@@ -131,7 +101,6 @@ const ProjectsSection = () => {
       event.preventDefault();
       manualScrollSpeed.current += event.deltaY * 0.5;
     };
-
     const handleDragStart = (pageX: number) => {
       isDragging.current = true;
       startX.current = pageX - container.offsetLeft;
@@ -139,26 +108,21 @@ const ProjectsSection = () => {
       manualScrollSpeed.current = 0;
       container.style.cursor = 'grabbing';
     };
-
     const handleDragMove = (pageX: number) => {
       if (!isDragging.current) return;
       const x = pageX - container.offsetLeft;
       const walk = (x - startX.current) * DRAG_MULTIPLIER;
       const newScrollLeft = scrollLeftStart.current - walk;
-
       const velocity = newScrollLeft - scrollPosition.current;
       manualScrollSpeed.current = velocity;
-
       scrollPosition.current = newScrollLeft;
       container.scrollLeft = newScrollLeft;
     };
-
     const handleDragEnd = () => {
       if (!isDragging.current) return;
       isDragging.current = false;
       container.style.cursor = 'grab';
     };
-
     const handleMouseDown = (e: MouseEvent) => handleDragStart(e.pageX);
     const handleMouseMove = (e: MouseEvent) => handleDragMove(e.pageX);
     const handleTouchStart = (e: TouchEvent) => handleDragStart(e.touches[0].pageX);
@@ -172,7 +136,7 @@ const ProjectsSection = () => {
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleDragEnd);
     container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchmove', handleDragMove, { passive: false });
     window.addEventListener('touchend', handleDragEnd);
     window.addEventListener('touchcancel', handleDragEnd);
 
@@ -180,14 +144,16 @@ const ProjectsSection = () => {
 
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
-      container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleDragEnd);
-      container.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.addEventListener('touchend', handleDragEnd);
-      window.addEventListener('touchcancel', handleDragEnd);
+      if (container) {
+        container.removeEventListener("wheel", handleWheel);
+        container.removeEventListener('mousedown', handleMouseDown);
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleDragEnd);
+        container.removeEventListener('touchstart', handleTouchStart);
+        window.removeEventListener('touchmove', handleDragMove);
+        window.addEventListener('touchend', handleDragEnd);
+        window.addEventListener('touchcancel', handleDragEnd);
+      }
     };
   }, [isMobile, animateScroll]);
 
@@ -198,15 +164,33 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="w-full flex flex-col items-center gap-8 py-12 px-4 overflow-x-hidden">
-          {projects.map((project, index) => (
-            <MobileProjectCard
-              key={`${project.id}-${index}`}
-              project={project}
-              index={index}
-              onClick={() => setSelectedProject(project.id)}
-            />
-          ))}
+        <div className="w-full h-[300vh] relative">
+          <div className="sticky top-1/4 -translate-y-1/4 h-screen w-full">
+            {projects.map((project, i) => {
+              const-scale = 1 - (projects.length - 1 - i) * 0.05;
+              const-translateY = (projects.length - 1 - i) * -1.5;
+              const progress = Math.max(0, Math.min(1, (scroll - (i * (window.innerHeight * 0.5))) / (window.innerHeight * 0.5)));
+
+              return (
+                <div
+                  key={`${project.id}-${i}`}
+                  className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
+                  style={{
+                    transform: `scale(${1 - (progress * 0.1)}) translateY(${progress * -5}rem)`,
+                    opacity: 1 - (progress * 0.5),
+                    zIndex: projects.length - i
+                  }}
+                >
+                  <ProjectCard
+                    {...project}
+                    size="small"
+                    index={i}
+                    onClick={() => setSelectedProject(project.id)}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       ) : (
         <div

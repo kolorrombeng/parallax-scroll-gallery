@@ -15,13 +15,13 @@ const ProjectDetail = ({ title, category, image, description, isOpen, onClose }:
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-background/80 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        className={`fixed inset-0 bg-background/80 z-50 transition-all duration-300 ${
+          isOpen ? "opacity-100 backdrop-blur-sm" : "opacity-0 backdrop-blur-none pointer-events-none"
         }`}
         onClick={onClose}
       />
 
-      {/* Detail Panel - Diubah menjadi modal pop-up */}
+      {/* Detail Panel - Modal pop-up */}
       <div
         className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${
           isOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
@@ -30,7 +30,7 @@ const ProjectDetail = ({ title, category, image, description, isOpen, onClose }:
       >
         <div
           className="relative w-full max-w-2xl max-h-[90vh] bg-card border border-border rounded-xl overflow-hidden flex flex-col"
-          onClick={(e) => e.stopPropagation()} // Mencegah modal tertutup saat diklik di dalam
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Tombol Tutup */}
           <Button

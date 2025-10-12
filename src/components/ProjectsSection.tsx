@@ -14,6 +14,7 @@ const DRAG_MULTIPLIER = 2;
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
   const containerRef = useRef<HTMLDivElement>(null);
+  const mobileContainerRef = useRef<HTMLDivElement>(null);
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
 
   const scrollPosition = useRef(0);
@@ -49,6 +50,8 @@ const ProjectsSection = () => {
       : [...originalProjects, ...originalProjects]
   );
   
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
     if (isMobile) {
       setProjects(originalProjects);
@@ -56,6 +59,36 @@ const ProjectsSection = () => {
       setProjects([...originalProjects, ...originalProjects]);
     }
   }, [isMobile, originalProjects]);
+
+  const handleMobileScroll = () => {
+    const container = mobileContainerRef.current;
+    if (!container) return;
+  
+    const scrollTop = window.scrollY;
+    const containerTop = container.offsetTop;
+    const containerHeight = container.offsetHeight;
+    const windowHeight = window.innerHeight;
+  
+    // Area scroll efektif adalah tinggi container dikurangi tinggi viewport
+    const scrollArea = containerHeight - windowHeight;
+    // Progress dimulai saat bagian atas container menyentuh bagian atas viewport
+    const progress = Math.max(0, Math.min(1, (scrollTop - containerTop) / scrollArea));
+  
+    setScrollProgress(progress);
+  };
+
+  useEffect(() => {
+    if (isMobile) {
+      window.addEventListener('scroll', handleMobileScroll, { passive: true });
+      handleMobileScroll(); // Panggil sekali untuk inisialisasi
+    }
+    
+    return () => {
+      if (isMobile) {
+        window.removeEventListener('scroll', handleMobileScroll);
+      }
+    };
+  }, [isMobile]);
 
   const animateScroll = useCallback(() => {
     if (!containerRef.current || isMobile) return;
@@ -167,17 +200,43 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="flex flex-col items-center w-full py-16 space-y-10">
-            {projects.map((project, index) => (
-                <div key={`${project.id}-${index}`} className="w-full h-[50vh] flex items-center justify-center sticky top-16" style={{ marginTop: index === 0 ? 0 : '-45vh' }}>
-                    <ProjectCard
-                        {...project}
-                        size="large" // Memaksa ukuran seragam
-                        index={index}
-                        onClick={() => setSelectedProject(project.id)}
-                    />
-                </div>
-            ))}
+        <div ref={mobileContainerRef} className="w-full" style={{ height: `${100 + (projects.length) * 80}vh` }}>
+            <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+              <div className="relative w-full h-full">
+                {projects.map((project, index) => {
+                  const progressPerCard = 1 / (projects.length);
+                  const cardStartProgress = index * progressPerCard;
+                  const cardEndProgress = cardStartProgress + progressPerCard;
+
+                  const localProgress = Math.max(0, (scrollProgress - cardStartProgress) / (cardEndProgress - cardStartProgress));
+
+                  const scale = 1 - (index * 0.05) + (localProgress * 0.05);
+                  const translateY = -index * 40 + localProgress * 40;
+
+                  const isVisible = scrollProgress >= cardStartProgress;
+
+                  return (
+                      <div
+                          key={`${project.id}-${index}`}
+                          className="absolute w-full h-full flex justify-center items-center"
+                          style={{ 
+                            transform: `scale(${scale}) translateY(${translateY}px)`,
+                            zIndex: projects.length - index,
+                            transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+                            opacity: isVisible ? 1 : 0,
+                          }}
+                      >
+                          <ProjectCard
+                              {...project}
+                              size="large" // Memaksa ukuran seragam
+                              index={index}
+                              onClick={() => setSelectedProject(project.id)}
+                          />
+                      </div>
+                  );
+                })}
+              </div>
+            </div>
         </div>
       ) : (
         <div

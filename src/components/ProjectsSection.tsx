@@ -7,44 +7,9 @@ import project3 from "@/assets/project-3.jpg";
 import project4 from "@/assets/project-4.jpg";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// --- KONFIGURASI ---
 const AUTO_SCROLL_SPEED = 0.4;
 const FRICTION = 0.95;
 const DRAG_MULTIPLIER = 2;
-
-// Komponen baru untuk menangani kartu pada versi mobile dengan hook-nya sendiri
-const MobileProjectCard = ({ project, index, onClick }: { project: any, index: number, onClick: () => void }) => {
-  // Logika baru untuk memastikan offset tidak pernah nol
-  const randomOffset = useMemo(() => {
-    const minOffset = 1; // Jarak minimal dari tengah (dalam rem)
-    const maxOffset = 2; // Jarak maksimal dari tengah (dalam rem)
-    const range = maxOffset - minOffset;
-    
-    // Menghasilkan nilai acak antara minOffset dan maxOffset
-    const offset = minOffset + Math.random() * range;
-    
-    // Menentukan arah secara acak (kiri atau kanan)
-    const direction = Math.random() < 0.5 ? -1 : 1;
-    
-    return offset * direction;
-  }, []);
-
-  return (
-    <div
-      style={{ transform: `translateX(${randomOffset}rem)` }}
-    >
-      <ProjectCard
-        title={project.title}
-        category={project.category}
-        image={project.image}
-        size={project.size as "small" | "medium" | "large"}
-        index={index}
-        onClick={onClick}
-        borderRadius={project.borderRadius}
-      />
-    </div>
-  );
-};
 
 const ProjectsSection = () => {
   const isMobile = useIsMobile();
@@ -80,21 +45,20 @@ const ProjectsSection = () => {
 
   const [projects, setProjects] = useState(() =>
     isMobile
-      ? originalProjects.slice().sort(() => Math.random() - 0.5)
+      ? originalProjects
       : [...originalProjects, ...originalProjects]
   );
 
   useEffect(() => {
     if (isMobile) {
-      setProjects(originalProjects.slice().sort(() => Math.random() - 0.5));
+      setProjects(originalProjects);
     } else {
       setProjects([...originalProjects, ...originalProjects]);
     }
   }, [isMobile, originalProjects]);
 
-
   const animateScroll = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isMobile) return;
 
     if (!isDragging.current) {
       const currentScrollSpeed = selectedProject === null ? AUTO_SCROLL_SPEED : 0;
@@ -119,10 +83,15 @@ const ProjectsSection = () => {
     }
 
     animationFrameId.current = requestAnimationFrame(animateScroll);
-  }, [selectedProject]);
+  }, [selectedProject, isMobile]);
 
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile) {
+        if (animationFrameId.current) {
+            cancelAnimationFrame(animationFrameId.current);
+        }
+        return;
+    };
 
     const container = containerRef.current;
     if (!container) return;
@@ -190,7 +159,7 @@ const ProjectsSection = () => {
       window.addEventListener('touchcancel', handleDragEnd);
     };
   }, [isMobile, animateScroll]);
-
+  
   const selectedProjectData = selectedProject !== null
     ? originalProjects.find(p => p.id === selectedProject)
     : null;
@@ -198,15 +167,16 @@ const ProjectsSection = () => {
   return (
     <>
       {isMobile ? (
-        <div className="w-full flex flex-col items-center gap-8 py-12 px-4 overflow-x-hidden">
-          {projects.map((project, index) => (
-            <MobileProjectCard
-              key={`${project.id}-${index}`}
-              project={project}
-              index={index}
-              onClick={() => setSelectedProject(project.id)}
-            />
-          ))}
+        <div className="flex flex-col items-center gap-12 py-12 w-full">
+            {projects.map((project, index) => (
+                <ProjectCard
+                    key={`${project.id}-${index}`}
+                    {...project}
+                    size="large" // Memaksa ukuran seragam
+                    index={index}
+                    onClick={() => setSelectedProject(project.id)}
+                />
+            ))}
         </div>
       ) : (
         <div
@@ -225,13 +195,9 @@ const ProjectsSection = () => {
                   className="flex-shrink-0"
                 >
                   <ProjectCard
-                    title={project.title}
-                    category={project.category}
-                    image={project.image}
-                    size={project.size as "small" | "medium" | "large"}
+                    {...project}
                     index={index}
                     onClick={() => setSelectedProject(project.id)}
-                    borderRadius={project.borderRadius}
                   />
                 </div>
               ))}
@@ -242,10 +208,7 @@ const ProjectsSection = () => {
 
       {selectedProjectData && (
         <ProjectDetail
-          title={selectedProjectData.title}
-          category={selectedProjectData.category}
-          image={selectedProjectData.image}
-          description={selectedProjectData.description}
+          {...selectedProjectData}
           isOpen={selectedProject !== null}
           onClose={() => setSelectedProject(null)}
         />

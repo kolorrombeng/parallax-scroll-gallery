@@ -16,14 +16,14 @@ interface LoadingParticle {
 }
 
 interface LoadingScreenProps {
+  isLoading: boolean;
   onLoadingComplete: () => void;
 }
 
-const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
+const LoadingScreen = ({ isLoading, onLoadingComplete }: LoadingScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<LoadingParticle[]>([]);
   const [progress, setProgress] = useState(0);
-  const [isExiting, setIsExiting] = useState(false);
   const startTimeRef = useRef(Date.now());
   const { theme } = useTheme();
 
@@ -139,10 +139,7 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
     const checkCompletion = () => {
       const elapsed = Date.now() - startTimeRef.current;
       if (progress >= 100 && elapsed >= MIN_LOADING_TIME) {
-        setIsExiting(true);
-        setTimeout(() => {
-          onLoadingComplete();
-        }, 1000);
+        onLoadingComplete();
       } else {
         setTimeout(checkCompletion, 50);
       }
@@ -154,18 +151,18 @@ const LoadingScreen = ({ onLoadingComplete }: LoadingScreenProps) => {
       clearInterval(progressInterval);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [theme, progress, onLoadingComplete]);
+  }, [theme, onLoadingComplete, progress]);
 
   return (
     <div
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background transition-all duration-1000 ease-out ${
-        isExiting ? 'opacity-0 scale-110' : 'opacity-100 scale-100'
+        !isLoading ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
       <canvas
         ref={canvasRef}
         className={`absolute inset-0 transition-opacity duration-1000 ${
-          isExiting ? 'opacity-0' : 'opacity-100'
+          !isLoading ? 'opacity-0' : 'opacity-100'
         }`}
       />
       

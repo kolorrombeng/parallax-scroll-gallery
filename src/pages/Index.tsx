@@ -4,12 +4,14 @@ import Header from "@/components/Header";
 import ProjectsSection from "@/components/ProjectsSection";
 import Particles2D from "@/components/Particles2D";
 import AboutMe from "@/components/AboutMe";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const Index = () => {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const currentYear = new Date().getFullYear();
   const [isAboutMeOpen, setIsAboutMeOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Ref untuk menyimpan posisi sentuhan awal di mobile
   const touchStartY = useRef(0);
@@ -79,10 +81,13 @@ const Index = () => {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-      <div className="bg-transparent">
-        <Particles2D />
-        <Header ref={headerRef} onTitleClick={() => setIsAboutMeOpen(true)} />
-        <AboutMe isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
+      {isLoading ? (
+        <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
+      ) : (
+        <div className="bg-transparent">
+          <Particles2D />
+          <Header ref={headerRef} onTitleClick={() => setIsAboutMeOpen(true)} />
+          <AboutMe isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
         
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
@@ -98,7 +103,8 @@ const Index = () => {
             </div>
           </footer>
         </main>
-      </div>
+        </div>
+      )}
     </ThemeProvider>
   );
 };

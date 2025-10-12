@@ -135,4 +135,4 @@ const ThreeParticles: React.FC = () => {
   );
 };
 
-export default Particles2D;
+export default ThreeParticles;

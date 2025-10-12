@@ -12,6 +12,7 @@ const Index = () => {
   const currentYear = new Date().getFullYear();
   const [isAboutMeOpen, setIsAboutMeOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   // Ref untuk menyimpan posisi sentuhan awal di mobile
   const touchStartY = useRef(0);
@@ -79,16 +80,28 @@ const Index = () => {
     };
   }, []);
 
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+    setTimeout(() => {
+      setIsContentLoaded(true);
+    }, 100); // Sedikit jeda untuk memastikan transisi dimulai setelah loading selesai
+  };
+
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-      {isLoading ? (
-        <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
-      ) : (
-        <div className="bg-transparent">
-          <Particles2D />
-          <Header ref={headerRef} onTitleClick={() => setIsAboutMeOpen(true)} />
-          <AboutMe isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
-        
+      <LoadingScreen
+        isLoading={isLoading}
+        onLoadingComplete={handleLoadingComplete}
+      />
+      <div
+        className={`bg-transparent transition-opacity duration-1000 ease-in-out ${
+          isContentLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <Particles2D />
+        <Header ref={headerRef} onTitleClick={() => setIsAboutMeOpen(true)} />
+        <AboutMe isOpen={isAboutMeOpen} onClose={() => setIsAboutMeOpen(false)} />
+      
         <main className="min-h-screen flex items-center justify-center overflow-hidden pt-16">
           <ProjectsSection />
 
@@ -103,8 +116,7 @@ const Index = () => {
             </div>
           </footer>
         </main>
-        </div>
-      )}
+      </div>
     </ThemeProvider>
   );
 };

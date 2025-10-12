@@ -5,21 +5,21 @@ interface ProjectCardProps {
   size: "small" | "medium" | "large";
   index: number;
   onClick: () => void;
-  borderRadius: string; // 1. Tambahkan prop baru di sini
+  borderRadius: string;
 }
 
-const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => { // 2. Terima prop di sini
-  // Ukuran dasar (tanpa prefix sm:/md:) telah diperkecil untuk mobile
+const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => {
   const sizeClasses = {
-    small: "w-[200px] sm:w-[280px] md:w-[320px] h-[240px] sm:h-[320px] md:h-[360px]",
-    medium: "w-[250px] sm:w-[360px] md:w-[420px] h-[290px] sm:h-[400px] md:h-[460px]",
-    large: "w-[300px] sm:w-[440px] md:w-[520px] h-[340px] sm:h-[480px] md:h-[560px]",
+    small: "w-[280px] md:w-[320px] h-[320px] md:h-[360px]",
+    medium: "w-[360px] md:w-[420px] h-[400px] md:h-[460px]",
+    large: "w-[440px] md:w-[520px] h-[480px] md:h-[560px]",
   };
 
+  const mobileSizeClass = "w-[80vw] max-w-sm h-[40vh] max-h-96";
+
   return (
-    <div 
-      // 3. Hapus 'rounded-2xl' dan ganti dengan prop
-      className={`group relative flex-shrink-0 overflow-hidden ${borderRadius} bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
+    <div
+      className={`group relative flex-shrink-0 overflow-hidden ${borderRadius} bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer sm:${sizeClasses[size]} ${mobileSizeClass}`}
       style={{ animationDelay: `${index * 0.1}s` }}
       onClick={onClick}
     >

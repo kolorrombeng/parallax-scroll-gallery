@@ -24,32 +24,23 @@ const ProjectsSection = () => {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
-  
-  const originalProjects = useMemo(() => [
-    { id: 1, title: "Brand Identity", category: "Branding", image: project1, size: "large", offsetY: -120, marginLeft: 0, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
-    { id: 2, title: "Web Experience", category: "UI/UX", image: project2, size: "medium", offsetY: 80, marginLeft: 30, description: "Modern web experience focused on user engagement and intuitive navigation.", borderRadius: "rounded-xl" },
-    { id: 3, title: "Mobile App", category: "Product", image: project3, size: "small", offsetY: -50, marginLeft: 20, description: "Native mobile application with seamless user experience.", borderRadius: "rounded-3xl" },
-    { id: 4, title: "Visual System", category: "Design System", image: project4, size: "large", offsetY: 120, marginLeft: 40, description: "Comprehensive design system for consistent user interfaces.", borderRadius: "rounded-lg" },
-    { id: 5, title: "E-commerce", category: "Web Design", image: project1, size: "medium", offsetY: -100, marginLeft: 25, description: "Full-featured e-commerce platform with modern checkout flow.", borderRadius: "rounded-3xl" },
-    { id: 6, title: "Art Direction", category: "Creative", image: project2, size: "small", offsetY: 100, marginLeft: 35, description: "Creative direction for digital and print campaigns.", borderRadius: "rounded-xl" },
-    { id: 7, title: "Dashboard UI", category: "Interface", image: project3, size: "large", offsetY: -70, marginLeft: 15, description: "Analytics dashboard with real-time data visualization.", borderRadius: "rounded-2xl" },
-    { id: 8, title: "Motion Design", category: "Animation", image: project4, size: "medium", offsetY: 150, marginLeft: 45, description: "Engaging motion graphics and animated experiences.", borderRadius: "rounded-lg" },
-    { id: 9, title: "Logo Design", category: "Branding", image: project1, size: "small", offsetY: -140, marginLeft: 20, description: "Unique logo design reflecting brand personality.", borderRadius: "rounded-3xl" },
-    { id: 10, title: "Portfolio Site", category: "Web", image: project2, size: "large", offsetY: 40, marginLeft: 30, description: "Personal portfolio showcasing creative work.", borderRadius: "rounded-xl" },
-    { id: 11, title: "Social Campaign", category: "Marketing", image: project3, size: "medium", offsetY: -80, marginLeft: 40, description: "Multi-platform social media marketing campaign.", borderRadius: "rounded-2xl" },
-    { id: 12, title: "Package Design", category: "Print", image: project4, size: "small", offsetY: 180, marginLeft: 25, description: "Product packaging design with eco-friendly materials.", borderRadius: "rounded-lg" },
-    { id: 13, title: "App Interface", category: "Mobile", image: project1, size: "large", offsetY: -90, marginLeft: 35, description: "Mobile app interface with focus on usability.", borderRadius: "rounded-3xl" },
-    { id: 14, title: "Editorial Design", category: "Print", image: project2, size: "medium", offsetY: 140, marginLeft: 20, description: "Magazine and editorial layout design.", borderRadius: "rounded-xl" },
-    { id: 15, title: "3D Renders", category: "3D", image: project3, size: "small", offsetY: -20, marginLeft: 45, description: "Photorealistic 3D rendering and visualization.", borderRadius: "rounded-2xl" },
-    { id: 16, title: "Illustration Set", category: "Illustration", image: project4, size: "large", offsetY: 70, marginLeft: 15, description: "Custom illustration set for digital products.", borderRadius: "rounded-lg" },
-  ], []);
+
+  const originalProjects = useMemo(
+    () => [
+      { id: 1, title: "Brand Identity", category: "Branding", image: project1, description: "Complete brand identity system including logo, colors, and guidelines.", borderRadius: "rounded-2xl" },
+      { id: 2, title: "Web Experience", category: "UI/UX", image: project2, description: "Modern web experience focused on user engagement and intuitive navigation.", borderRadius: "rounded-xl" },
+      { id: 3, title: "Mobile App", category: "Product", image: project3, description: "Native mobile application with seamless user experience.", borderRadius: "rounded-3xl" },
+      { id: 4, title: "Visual System", category: "Design System", image: project4, description: "Comprehensive design system for consistent user interfaces.", borderRadius: "rounded-lg" },
+      { id: 5, title: "E-commerce", category: "Web Design", image: project1, description: "Full-featured e-commerce platform with modern checkout flow.", borderRadius: "rounded-3xl" },
+      { id: 6, title: "Art Direction", category: "Creative", image: project2, description: "Creative direction for digital and print campaigns.", borderRadius: "rounded-xl" },
+    ],
+    []
+  );
 
   const [projects, setProjects] = useState(() =>
-    isMobile
-      ? originalProjects
-      : [...originalProjects, ...originalProjects]
+    isMobile ? originalProjects : [...originalProjects, ...originalProjects]
   );
-  
+
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
@@ -63,30 +54,32 @@ const ProjectsSection = () => {
   const handleMobileScroll = () => {
     const container = mobileContainerRef.current;
     if (!container) return;
-  
+
     const scrollTop = window.scrollY;
     const containerTop = container.offsetTop;
     const containerHeight = container.offsetHeight;
     const windowHeight = window.innerHeight;
-  
-    // Area scroll efektif adalah tinggi container dikurangi tinggi viewport
-    const scrollArea = containerHeight - windowHeight;
-    // Progress dimulai saat bagian atas container menyentuh bagian atas viewport
-    const progress = Math.max(0, Math.min(1, (scrollTop - containerTop) / scrollArea));
-  
-    setScrollProgress(progress);
+
+    const start = containerTop;
+    const end = containerTop + containerHeight - windowHeight;
+
+    if (scrollTop >= start && scrollTop <= end) {
+      const progress = (scrollTop - start) / (end - start);
+      setScrollProgress(progress);
+    } else if (scrollTop < start) {
+      setScrollProgress(0);
+    } else {
+      setScrollProgress(1);
+    }
   };
 
   useEffect(() => {
     if (isMobile) {
-      window.addEventListener('scroll', handleMobileScroll, { passive: true });
-      handleMobileScroll(); // Panggil sekali untuk inisialisasi
+      window.addEventListener("scroll", handleMobileScroll);
+      handleMobileScroll();
     }
-    
     return () => {
-      if (isMobile) {
-        window.removeEventListener('scroll', handleMobileScroll);
-      }
+      if (isMobile) window.removeEventListener("scroll", handleMobileScroll);
     };
   }, [isMobile]);
 
@@ -120,11 +113,11 @@ const ProjectsSection = () => {
 
   useEffect(() => {
     if (isMobile) {
-        if (animationFrameId.current) {
-            cancelAnimationFrame(animationFrameId.current);
-        }
-        return;
-    };
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      return;
+    }
 
     const container = containerRef.current;
     if (!container) return;
@@ -139,7 +132,7 @@ const ProjectsSection = () => {
       startX.current = pageX - container.offsetLeft;
       scrollLeftStart.current = container.scrollLeft;
       manualScrollSpeed.current = 0;
-      container.style.cursor = 'grabbing';
+      container.style.cursor = "grabbing";
     };
 
     const handleDragMove = (pageX: number) => {
@@ -158,7 +151,7 @@ const ProjectsSection = () => {
     const handleDragEnd = () => {
       if (!isDragging.current) return;
       isDragging.current = false;
-      container.style.cursor = 'grab';
+      container.style.cursor = "grab";
     };
 
     const handleMouseDown = (e: MouseEvent) => handleDragStart(e.pageX);
@@ -170,75 +163,104 @@ const ProjectsSection = () => {
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-    container.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleDragEnd);
-    container.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    window.addEventListener('touchend', handleDragEnd);
-    window.addEventListener('touchcancel', handleDragEnd);
+    container.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleDragEnd);
+    container.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleDragEnd);
+    window.addEventListener("touchcancel", handleDragEnd);
 
     animationFrameId.current = requestAnimationFrame(animateScroll);
 
     return () => {
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
       container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleDragEnd);
-      container.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.addEventListener('touchend', handleDragEnd);
-      window.addEventListener('touchcancel', handleDragEnd);
+      container.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleDragEnd);
+      container.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleDragEnd);
+      window.removeEventListener("touchcancel", handleDragEnd);
     };
   }, [isMobile, animateScroll]);
-  
-  const selectedProjectData = selectedProject !== null
-    ? originalProjects.find(p => p.id === selectedProject)
-    : null;
+
+  const selectedProjectData =
+    selectedProject !== null
+      ? originalProjects.find((p) => p.id === selectedProject)
+      : null;
 
   return (
     <>
       {isMobile ? (
-        <div ref={mobileContainerRef} className="w-full" style={{ height: `${100 + (projects.length) * 80}vh` }}>
-            <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-              <div className="relative w-full h-full">
-                {projects.map((project, index) => {
-                  const progressPerCard = 1 / (projects.length);
-                  const cardStartProgress = index * progressPerCard;
-                  const cardEndProgress = cardStartProgress + progressPerCard;
+        // === MOBILE STACKED SCROLL REVEAL DENGAN PARALLAX ===
+        <div
+          ref={mobileContainerRef}
+          className="relative w-full"
+          style={{ height: `${projects.length * 100}vh` }}
+        >
+          <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+            {projects.map((project, index) => {
+              const progressPerCard = 1 / projects.length;
+              const start = index * progressPerCard;
+              const end = start + progressPerCard;
 
-                  const localProgress = Math.max(0, (scrollProgress - cardStartProgress) / (cardEndProgress - cardStartProgress));
+              let localProgress = 0;
+              if (scrollProgress >= start && scrollProgress < end) {
+                localProgress = (scrollProgress - start) / progressPerCard;
+              } else if (scrollProgress >= end) {
+                localProgress = 1;
+              }
 
-                  const scale = 1 - (index * 0.05) + (localProgress * 0.05);
-                  const translateY = -index * 40 + localProgress * 40;
+              // Parallax background (bergerak lambat)
+              const parallaxTranslate = localProgress * -30; // lebih kecil untuk efek depth
+              const translateY = localProgress * -100;
+              const scale = 1 - localProgress * 0.1;
+              const opacity = Math.max(0, 1 - localProgress * 1.2);
 
-                  const isVisible = scrollProgress >= cardStartProgress;
+              return (
+                <div
+                  key={`${project.id}-${index}`}
+                  className="absolute w-full h-full flex justify-center items-center"
+                  style={{
+                    zIndex: projects.length - index,
+                  }}
+                >
+                  {/* Background Parallax */}
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(${project.image})`,
+                      transform: `translateY(${parallaxTranslate}px) scale(1.2)`,
+                      opacity: 0.2,
+                      filter: "blur(10px)",
+                      transition: "transform 0.6s ease-out, opacity 0.6s ease-out",
+                    }}
+                  />
 
-                  return (
-                      <div
-                          key={`${project.id}-${index}`}
-                          className="absolute w-full h-full flex justify-center items-center"
-                          style={{ 
-                            transform: `scale(${scale}) translateY(${translateY}px)`,
-                            zIndex: projects.length - index,
-                            transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
-                            opacity: isVisible ? 1 : 0,
-                          }}
-                      >
-                          <ProjectCard
-                              {...project}
-                              size="large" // Memaksa ukuran seragam
-                              index={index}
-                              onClick={() => setSelectedProject(project.id)}
-                          />
-                      </div>
-                  );
-                })}
-              </div>
-            </div>
+                  {/* Foreground Card */}
+                  <div
+                    style={{
+                      transform: `translateY(${translateY}%) scale(${scale})`,
+                      opacity,
+                      transition: "transform 0.5s ease, opacity 0.5s ease",
+                    }}
+                  >
+                    <ProjectCard
+                      {...project}
+                      size="large"
+                      index={index}
+                      onClick={() => setSelectedProject(project.id)}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       ) : (
+        // === DESKTOP AUTO-SCROLL HORIZONTAL ===
         <div
           ref={containerRef}
           className="w-full overflow-hidden cursor-grab active:cursor-grabbing"
@@ -246,14 +268,7 @@ const ProjectsSection = () => {
           <div className="h-full w-max flex py-48 px-12">
             <div className="flex gap-4 sm:gap-6 md:gap-8 lg:gap-12">
               {projects.map((project, index) => (
-                <div
-                  key={`${project.id}-${index}`}
-                  style={{
-                    transform: `translateY(${project.offsetY}px)`,
-                    marginLeft: index === 0 ? '0' : `${project.marginLeft}px`,
-                  }}
-                  className="flex-shrink-0"
-                >
+                <div key={`${project.id}-${index}`} className="flex-shrink-0">
                   <ProjectCard
                     {...project}
                     index={index}

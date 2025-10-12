@@ -5,21 +5,23 @@ interface ProjectCardProps {
   size: "small" | "medium" | "large";
   index: number;
   onClick: () => void;
-  borderRadius: string; // 1. Tambahkan prop baru di sini
+  borderRadius: string;
 }
 
-const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => { // 2. Terima prop di sini
-  // Ukuran dasar (tanpa prefix sm:/md:) telah diperkecil untuk mobile
-  const sizeClasses = {
-    small: "w-[200px] sm:w-[280px] md:w-[320px] h-[240px] sm:h-[320px] md:h-[360px]",
-    medium: "w-[250px] sm:w-[360px] md:w-[420px] h-[290px] sm:h-[400px] md:h-[460px]",
-    large: "w-[300px] sm:w-[440px] md:w-[520px] h-[340px] sm:h-[480px] md:h-[560px]",
+const ProjectCard = ({ title, category, image, size, index, onClick, borderRadius }: ProjectCardProps) => {
+  // Ukuran untuk desktop tetap dinamis
+  const desktopSizeClasses = {
+    small: "sm:w-[280px] md:w-[320px] sm:h-[320px] md:h-[360px]",
+    medium: "sm:w-[360px] md:w-[420px] sm:h-[400px] md:h-[460px]",
+    large: "sm:w-[440px] md:w-[520px] sm:h-[480px] md:h-[560px]",
   };
 
+  // Ukuran seragam untuk mobile
+  const mobileSizeClass = "w-[85vw] h-[110vw] max-w-sm max-h-[500px]";
+
   return (
-    <div 
-      // 3. Hapus 'rounded-2xl' dan ganti dengan prop
-      className={`group relative flex-shrink-0 overflow-hidden ${borderRadius} bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${sizeClasses[size]}`}
+    <div
+      className={`group relative flex-shrink-0 overflow-hidden ${borderRadius} bg-card border transition-transform duration-300 hover:scale-[1.02] cursor-pointer ${mobileSizeClass} ${desktopSizeClasses[size]}`}
       style={{ animationDelay: `${index * 0.1}s` }}
       onClick={onClick}
     >
@@ -36,7 +38,7 @@ const ProjectCard = ({ title, category, image, size, index, onClick, borderRadiu
         <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2 tracking-wider uppercase">
           {category}
         </p>
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight">
+        <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
           {title}
         </h3>
       </div>
